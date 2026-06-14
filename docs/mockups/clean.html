@@ -1,0 +1,182 @@
+<!doctype html>
+<html lang="en" data-theme="native" data-appearance="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — Clean (mockup)</title>
+<script>(function(){var t=localStorage.getItem('conso-theme')||'native',a=localStorage.getItem('conso-appearance')||'light';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-appearance',t==='pro'?'dark':a);})();</script>
+<link rel="stylesheet" href="conso.css" />
+<style>
+  .clean{ max-width:660px; margin:0 auto; }
+  .hero{ text-align:center; padding:10px 0 4px; }
+  .ring-wrap{ position:relative; width:212px; height:212px; margin:0 auto; }
+  .ring-wrap svg{ transform:rotate(-90deg); }
+  .ring-center{ position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center; }
+  .ring-center .big{ font-family:var(--font-num); font-size:40px; font-weight:600; letter-spacing:-.03em; line-height:1; }
+  .ring-center .big small{ font-size:17px; color:var(--text-3); font-weight:600; }
+  .ring-center .lbl2{ font-size:11px; color:var(--text-3); margin-top:7px; text-transform:uppercase; letter-spacing:.07em; font-weight:600; }
+  .submsg{ color:var(--text-2); font-size:13px; margin:16px auto 18px; max-width:400px; line-height:1.55; }
+  .cta-row{ display:flex; gap:10px; justify-content:center; }
+
+  .catpanel{ margin-top:22px; background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); box-shadow:var(--card-shadow), inset 0 1px 0 var(--edge-hi); overflow:hidden; }
+  .catpanel .ph{ display:flex; align-items:center; padding:13px 16px; border-bottom:1px solid var(--hair); }
+  .catpanel .ph .t{ font-size:11.5px; font-weight:600; color:var(--text-2); text-transform:uppercase; letter-spacing:.05em; }
+  .catpanel .ph .sel{ margin-left:auto; font-size:12px; color:var(--accent); font-weight:600; cursor:pointer; }
+  .cat-row{ display:grid; grid-template-columns:auto 1fr auto auto; gap:13px; align-items:center; padding:13px 16px; border-top:1px solid var(--hair); }
+  .cat-row:first-of-type{ border-top:0; }
+  .cat-row .sw{ width:9px; height:36px; border-radius:5px; background:var(--accent); }
+  .cat-row .nm{ font-size:13.5px; font-weight:600; }
+  .cat-row .nm small{ display:block; color:var(--text-3); font-weight:400; font-size:11.5px; margin-top:2px; }
+  .cat-row .sz{ font-family:var(--font-num); font-size:13.5px; color:var(--text-2); }
+  .check{ width:22px; height:22px; border-radius:7px; border:1.5px solid transparent; display:grid; place-items:center; background:var(--accent); color:#fff; }
+  [data-theme="pro"] .check{ color:#000; }
+  .check.off{ background:transparent; border-color:var(--card-border); color:transparent; }
+  .check svg{ width:13px; height:13px; }
+  .catpanel .pf{ display:flex; align-items:center; gap:8px; padding:13px 16px; border-top:1px solid var(--hair); color:var(--text-3); font-size:12px; }
+  .catpanel .pf .tot{ color:var(--text-2); font-weight:600; }
+  .catpanel .pf .safe{ margin-left:auto; display:flex; align-items:center; gap:6px; }
+  .catpanel .pf .safe svg{ width:14px; height:14px; }
+</style>
+</head>
+<body>
+
+  <div class="switcher">
+    <span class="lbl">Theme</span>
+    <div class="seg" id="seg">
+      <button data-t="native">Modern Native</button>
+      <button data-t="pro">Pro Dark</button>
+      <button data-t="character">Character</button>
+    </div>
+    <span class="lbl" style="margin-left:4px">Mode</span>
+    <div class="seg" id="app">
+      <button data-a="light" class="appbtn" title="Light">☀</button>
+      <button data-a="dark" class="appbtn" title="Dark">☾</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="window">
+      <div class="topbar">
+        <div class="tb-left"><div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div></div>
+        <div class="navwrap">
+          <span class="logo"></span>
+          <nav class="pillnav">
+            <a class="item active" href="clean.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 21l6-6m0 0l3-9 6 6-9 3zm0 0l3 3"/></svg><span class="t">Clean</span><span class="badge">12 GB</span></a>
+            <a class="item" href="software.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M12 3l8 4.5v9L12 21l-8-4.5v-9L12 3zm0 0v18M4 7.5l8 4.5 8-4.5"/></svg><span class="t">Software</span><span class="badge">7</span></a>
+            <a class="item" href="optimize.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M13 2L4 14h7l-1 8 9-12h-7l1-8z"/></svg><span class="t">Optimize</span></a>
+            <a class="item" href="analyze.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 3v18h18M8 17V9m5 8V5m5 12v-6"/></svg><span class="t">Analyze</span></a>
+            <a class="item" href="main-window.html"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9"><path d="M3 12h4l2 6 4-14 2 8h6"/></svg><span class="t">Status</span></a>
+          </nav>
+        </div>
+        <div class="tb-right">
+          <button class="iconbtn" title="Run Doctor"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 3v4a3 3 0 006 0V3M7 7a5 5 0 0010 0M12 12v4a4 4 0 008 0v-1"/><circle cx="20" cy="14" r="1.4"/></svg></button>
+          <button class="iconbtn" title="Settings"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="3.2"/><path d="M19.4 15a1.7 1.7 0 00.3 1.9 2 2 0 11-2.7 2.7 1.7 1.7 0 00-2.9 1.2 2 2 0 11-4 0 1.7 1.7 0 00-2.9-1.2 2 2 0 11-2.7-2.7A1.7 1.7 0 003.6 15a2 2 0 110-4 1.7 1.7 0 001-2.9 2 2 0 112.7-2.7A1.7 1.7 0 0010 4.6a2 2 0 014 0 1.7 1.7 0 002.9 1.2 2 2 0 112.7 2.7 1.7 1.7 0 001.2 2.9 2 2 0 010 4 1.7 1.7 0 00-1.1 1z"/></svg></button>
+        </div>
+      </div>
+
+      <main class="content">
+        <div class="phead"><h1>Clean</h1><span class="sub">last cleaned 2h ago · 12 GB reclaimed</span></div>
+
+        <div class="clean">
+          <div class="hero">
+            <div class="ring-wrap">
+              <svg viewBox="0 0 212 212">
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--hair)" stroke-width="18"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="176.9 534.07" stroke-dashoffset="0" opacity="1"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="159.6 534.07" stroke-dashoffset="-180.9" opacity=".8"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="64.9 534.07" stroke-dashoffset="-344.5" opacity=".62"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="43.4 534.07" stroke-dashoffset="-413.4" opacity=".48"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="34.8 534.07" stroke-dashoffset="-460.8" opacity=".36"/>
+                <circle cx="106" cy="106" r="85" fill="none" stroke="var(--accent)" stroke-width="18" stroke-dasharray="30.4 534.07" stroke-dashoffset="-499.6" opacity=".26"/>
+              </svg>
+              <div class="ring-center">
+                <div class="big">12.4<small> GB</small></div>
+                <div class="lbl2">reclaimable</div>
+              </div>
+            </div>
+            <p class="submsg">A light sweep of caches, logs, and build junk. Everything is previewed before removal — nothing important is touched.</p>
+            <div class="cta-row">
+              <button class="btn primary lg">Review &amp; Clean</button>
+              <button class="btn lg ghost">Quick Clean</button>
+            </div>
+          </div>
+
+          <div class="catpanel">
+            <div class="ph"><span class="t">What we found</span><span class="sel">Deselect all</span></div>
+
+            <div class="cat-row">
+              <span class="sw" style="opacity:1"></span>
+              <span class="nm">System Caches<small>clears known-safe cache contents with apps quit · selective, not a blanket wipe</small></span>
+              <span class="sz">4.2 GB</span>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.8"></span>
+              <span class="nm">Developer Junk<small>DerivedData, node_modules, package caches · skips folders with uncommitted changes</small></span>
+              <span class="sz">3.8 GB</span>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.62"></span>
+              <span class="nm">Browser Data<small>caches &amp; temporary files (keeps history &amp; logins)</small></span>
+              <span class="sz">1.6 GB</span>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.48"></span>
+              <span class="nm">App Leftovers<small>remnants of apps you've removed · matched by bundle id — review</small></span>
+              <span class="sz">1.1 GB</span>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.36"></span>
+              <span class="nm">Logs &amp; Diagnostics<small>system, crash &amp; install logs</small></span>
+              <span class="sz">0.9 GB</span>
+              <span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.26"></span>
+              <span class="nm">Trash<small>items waiting in the Bin</small></span>
+              <span class="sz">0.8 GB</span>
+              <span class="check off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+
+            <div class="pf"><span class="tot">5 of 6 selected · 11.6 GB</span><span class="safe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l7 3v5c0 4.5-3 8-7 10-4-2-7-5.5-7-10V6l7-3z"/></svg>Protected paths are never removed</span></div>
+          </div>
+
+          <div class="catpanel">
+            <div class="ph"><span class="t">Large hidden items</span><span class="sel" style="color:var(--text-3);cursor:default">separate from the 12.4 GB sweep</span></div>
+
+            <div class="cat-row">
+              <span class="sw" style="opacity:.5;background:var(--warm,var(--text-3))"></span>
+              <span class="nm">APFS local snapshots<small>local Time Machine snapshots — freed automatically under pressure; reclaim now if you're tight · recovery data — review carefully</small></span>
+              <span class="sz">48 GB</span>
+              <span class="check off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.5;background:var(--warm,var(--text-3))"></span>
+              <span class="nm">iOS device backups<small>old iPhone/iPad backups in MobileSync · recovery data — review carefully</small></span>
+              <span class="sz">32 GB</span>
+              <span class="check off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+            <div class="cat-row">
+              <span class="sw" style="opacity:.5;background:var(--warm,var(--text-3))"></span>
+              <span class="nm">Mail attachments<small>downloaded mail attachments · recovery data — review carefully</small></span>
+              <span class="sz">6 GB</span>
+              <span class="check off"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><path d="M5 13l4 4L19 7"/></svg></span>
+            </div>
+
+            <div class="pf"><span class="tot">0 of 3 selected · 86 GB</span><span class="safe"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 9v4m0 4h.01M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/></svg>Recovery data — nothing selected by default</span></div>
+          </div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <p class="legend">
+    <b>conso · Clean</b> — airy hero (reclaimable ring + reassuring copy) over a clean category list · toggle <b>Theme</b>/<b>Mode</b> above, or click <b>Status</b> in the nav. HTML plan mockup.
+  </p>
+
+  <script src="conso.js"></script>
+</body>
+</html>

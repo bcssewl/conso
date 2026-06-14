@@ -1,0 +1,121 @@
+<!doctype html>
+<html lang="en" data-theme="native" data-appearance="light">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — First-run setup (mockup)</title>
+<script>(function(){var t=localStorage.getItem('conso-theme')||'native',a=localStorage.getItem('conso-appearance')||'light';document.documentElement.setAttribute('data-theme',t);document.documentElement.setAttribute('data-appearance',t==='pro'?'dark':a);})();</script>
+<link rel="stylesheet" href="conso.css" />
+<style>
+  .ob{ max-width:470px; margin:18px auto 0; text-align:center; }
+  .ob .biglogo{ width:74px; height:74px; margin:0 auto 16px; background:var(--logo) center/contain no-repeat; }
+  .ob h2{ font-size:26px; font-weight:600; letter-spacing:-.02em; }
+  .ob .sub{ color:var(--text-2); font-size:14px; margin-top:8px; line-height:1.5; }
+
+  .permcard{ margin-top:22px; text-align:left; background:var(--card); border:1px solid var(--card-border); border-radius:var(--radius); box-shadow:var(--card-shadow), inset 0 1px 0 var(--edge-hi); overflow:hidden; }
+  .permrow{ display:flex; align-items:center; gap:12px; padding:14px 16px; border-top:1px solid var(--hair); }
+  .permrow:first-child{ border-top:0; }
+  .permrow .pi{ width:34px; height:34px; border-radius:9px; background:var(--accent-soft); display:grid; place-items:center; color:var(--accent); flex:none; }
+  [data-theme="pro"] .permrow .pi{ background:#161616; color:var(--text-2); }
+  .permrow .pi svg{ width:18px; height:18px; }
+  .permrow .pm{ flex:1; min-width:0; }
+  .permrow .pm .nm{ font-size:14px; font-weight:600; display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+  .permrow .pm .ds{ font-size:11.5px; color:var(--text-3); margin-top:3px; line-height:1.45; }
+  .permrow .pa{ flex:none; }
+
+  .stepper{ display:flex; gap:7px; justify-content:center; margin-top:22px; }
+  .stepper i{ width:7px; height:7px; border-radius:50%; background:var(--hair); display:block; }
+  .stepper i.on{ background:var(--accent); width:20px; border-radius:4px; }
+
+  .obcta{ margin-top:20px; display:flex; flex-direction:column; align-items:center; gap:10px; }
+  .verify{ font-size:11.5px; color:var(--text-3); display:flex; align-items:center; gap:6px; justify-content:center; max-width:380px; }
+  .verify svg{ width:13px; height:13px; flex:none; }
+
+  .obnote{ margin-top:18px; text-align:left; font-size:11.5px; color:var(--text-2); line-height:1.55; display:flex; gap:9px; align-items:flex-start; background:var(--accent-soft); padding:11px 13px; border-radius:11px; }
+  .obnote svg{ width:15px; height:15px; flex:none; margin-top:1px; color:var(--accent); }
+  .obnote b{ color:var(--text); font-weight:600; }
+  .obreassure{ margin-top:14px; font-size:11.5px; color:var(--text-3); }
+</style>
+</head>
+<body>
+
+  <div class="switcher">
+    <span class="lbl">Theme</span>
+    <div class="seg" id="seg">
+      <button data-t="native">Modern Native</button>
+      <button data-t="pro">Pro Dark</button>
+      <button data-t="character">Character</button>
+    </div>
+    <span class="lbl" style="margin-left:4px">Mode</span>
+    <div class="seg" id="app">
+      <button data-a="light" class="appbtn" title="Light">☀</button>
+      <button data-a="dark" class="appbtn" title="Dark">☾</button>
+    </div>
+  </div>
+
+  <div class="stage">
+    <div class="window">
+      <div class="topbar">
+        <div class="tb-left"><div class="lights"><i class="r"></i><i class="y"></i><i class="g"></i></div></div>
+        <div style="font-size:13px;font-weight:600;color:var(--text-2)">Set up conso</div>
+        <div class="tb-right"></div>
+      </div>
+
+      <main class="content">
+        <div class="ob">
+          <div class="biglogo"></div>
+          <h2>Welcome to conso</h2>
+          <p class="sub">Two quick permissions and you're ready. conso checks these <b>live every launch</b> — it never assumes a grant is still valid.</p>
+
+          <div class="permcard">
+            <div class="permrow">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><rect x="4" y="10" width="16" height="11" rx="2"/><path d="M8 10V7a4 4 0 018 0v3"/></svg></span>
+              <span class="pm">
+                <span class="nm">Full Disk Access <span class="cbadge warm">Not granted</span></span>
+                <span class="ds">Required to scan, analyze and clean protected folders. We verify it by actually reading a protected path — not by trusting the toggle.</span>
+              </span>
+              <span class="pa"><button class="btn">Open Settings</button></span>
+            </div>
+            <div class="permrow">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3l8 4v5c0 5-3.5 8-8 9-4.5-1-8-4-8-9V7l8-4z"/><path d="M9 12l2 2 4-4"/></svg></span>
+              <span class="pm">
+                <span class="nm">Privileged Helper <span class="cbadge warm">Not installed</span></span>
+                <span class="ds">Lets maintenance &amp; deep-clean run with admin rights. Installed once via SMAppService — one password, then never again.</span>
+              </span>
+              <span class="pa"><button class="btn">Install</button></span>
+            </div>
+            <div class="permrow">
+              <span class="pi"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M18 8a6 6 0 10-12 0c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.7 21a2 2 0 01-3.4 0"/></svg></span>
+              <span class="pm">
+                <span class="nm">Notifications <span class="cbadge mut">Optional</span></span>
+                <span class="ds">A heads-up when a cleanup or update finishes.</span>
+              </span>
+              <span class="pa"><button class="btn ghost">Allow</button></span>
+            </div>
+          </div>
+
+          <div class="stepper"><i class="on"></i><i></i><i></i></div>
+
+          <div class="obcta">
+            <button class="btn primary lg">Enable All &amp; Continue</button>
+            <span class="verify"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M20 6L9 17l-5-5"/></svg>conso re-checks on every launch and points you to the exact fix if anything's missing.</span>
+          </div>
+
+          <div class="obnote">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"/><path d="M12 8h.01M11 12h1v4h1"/></svg>
+            <span><b>If macOS blocks the first launch</b> ("unidentified developer"), open <b>System&nbsp;Settings → Privacy &amp; Security → Open Anyway</b>. The old right-click&nbsp;→&nbsp;Open shortcut was removed in macOS&nbsp;15.</span>
+          </div>
+
+          <div class="obreassure">conso processes everything locally. Nothing leaves your Mac.</div>
+        </div>
+      </main>
+    </div>
+  </div>
+
+  <p class="legend">
+    <b>conso · First-run setup</b> — asks for everything up front, verifies live (never trusts a cached grant), and handles the Gatekeeper first-launch path. HTML plan mockup.
+  </p>
+
+  <script src="conso.js"></script>
+</body>
+</html>

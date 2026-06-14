@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — native macOS maintenance app</title>
+<style>
+  :root{
+    --bg: radial-gradient(120% 120% at 0% 0%, #eaf1fb 0%, #e7e9f3 45%, #f4eef6 100%);
+    --card: rgba(255,255,255,.7); --border: rgba(0,0,0,.07);
+    --text:#1d1d1f; --text2:#56565c; --text3:#8a8a90; --accent:#0a84ff;
+    --good:#1aa251; --warn:#c98a00; --muted:#8a8a90;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;min-height:100vh;padding:54px 22px 80px;}
+  .wrap{max-width:880px;margin:0 auto;}
+  .logo{width:60px;height:60px;border-radius:15px;margin-bottom:18px;background:url("assets/mark-native.png") center/contain no-repeat;}
+  h1{font-size:34px;letter-spacing:-.03em;}
+  .tag{color:var(--text2);font-size:16px;margin-top:6px;}
+  .meta{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px;}
+  .chip{font-size:12px;font-weight:600;background:var(--card);border:1px solid var(--border);
+    border-radius:999px;padding:6px 12px;color:var(--text2);backdrop-filter:blur(20px);}
+  h2{font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--text3);margin:38px 0 14px;}
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+  a.card{display:block;text-decoration:none;color:inherit;background:var(--card);border:1px solid var(--border);
+    border-radius:16px;padding:18px;backdrop-filter:blur(24px);transition:transform .15s ease, box-shadow .15s ease;
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 26px rgba(20,30,60,.07);}
+  a.card:hover{transform:translateY(-2px);box-shadow:0 14px 34px rgba(20,30,60,.13);}
+  a.card.todo{opacity:.6;pointer-events:none;}
+  .card .t{font-size:16px;font-weight:650;letter-spacing:-.01em;display:flex;align-items:center;gap:8px;}
+  .card .d{font-size:13px;color:var(--text2);margin-top:6px;line-height:1.5;}
+  .badge{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;padding:3px 7px;border-radius:6px;margin-left:auto;}
+  .badge.ready{background:rgba(26,162,81,.15);color:var(--good);}
+  .badge.next{background:rgba(201,138,0,.16);color:var(--warn);}
+  .note{margin-top:30px;font-size:12.5px;color:var(--text3);line-height:1.7;background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:16px 18px;backdrop-filter:blur(20px);}
+  .note b{color:var(--text2);}
+</style>
+</head>
+<body>
+  <div class="wrap">
+    <div class="logo"></div>
+    <h1>conso</h1>
+    <p class="tag">A native macOS maintenance app — clean, optimize, analyze, and monitor your Mac. These pages are the original design references; the shipping app is the source in this repository.</p>
+    <div class="meta">
+      <span class="chip">SwiftUI · macOS 26</span>
+      <span class="chip">Apple Silicon</span>
+      <span class="chip">3 themes · light/dark</span>
+      <span class="chip">Menu-bar + window</span>
+      <span class="chip">Clean-room · no GPL</span>
+      <span class="chip">Personal-first</span>
+    </div>
+
+    <h2>UI Mockups — click through, themes persist</h2>
+    <div class="grid">
+      <a class="card" href="mockups/main-window.html"><div class="t">Status + Menu-bar HUD <span class="badge ready">Ready</span></div><div class="d">Health hero, live metric cards (temps, histogram, area charts), process table, and the menu-bar HUD.</div></a>
+      <a class="card" href="mockups/clean.html"><div class="t">Clean <span class="badge ready">Ready</span></div><div class="d">Reclaimable-space ring, reassuring copy, and a categorized results list.</div></a>
+      <a class="card" href="mockups/software.html"><div class="t">Software <span class="badge ready">Ready</span></div><div class="d">Updates across App Store / Homebrew / Sparkle / Electron, plus uninstall & login items.</div></a>
+      <a class="card" href="mockups/optimize.html"><div class="t">Optimize <span class="badge ready">Ready</span></div><div class="d">Safe maintenance routines; admin-only tasks via the privileged helper.</div></a>
+      <a class="card" href="mockups/analyze.html"><div class="t">Analyze <span class="badge ready">Ready</span></div><div class="d">Interactive disk-usage treemap with drill-down + largest-folders panel.</div></a>
+      <a class="card" href="mockups/onboarding.html"><div class="t">Onboarding & Permissions <span class="badge ready">Ready</span></div><div class="d">First-run: Full Disk Access + privileged-helper install.</div></a>
+    </div>
+
+    <h2>Design &amp; docs</h2>
+    <div class="grid">
+      <a class="card" href="architecture.html"><div class="t">Architecture <span class="badge ready">Ready</span></div><div class="d">App shell, privileged helper, core modules, permissions, theming — plus a "macOS realities" section from the lessons file.</div></a>
+      <a class="card" href="features.html"><div class="t">Features + Parity Matrix <span class="badge ready">Ready</span></div><div class="d">Every pillar vs the paid app, where conso goes further, and the honest Apple-Silicon limits.</div></a>
+      <a class="card" href="roadmap.html"><div class="t">Roadmap <span class="badge ready">Ready</span></div><div class="d">Phased build plan — each phase ships a runnable, signed app; lessons applied from Phase 0.</div></a>
+    </div>
+
+    <div class="note">
+      <b>Status:</b> Feature-complete. All five pillars, the privileged helper, and the on-device AI suite are implemented and tested. These pages are the original design references — the shipping app is the source in this repository (see the README).
+    </div>
+  </div>
+</body>
+</html>

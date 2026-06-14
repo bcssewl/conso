@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+    <key>Label</key>
+    <string>com.conso.conso.helper</string>
+    <!-- Path to the helper executable INSIDE the app bundle (Copy Files phase puts it here). -->
+    <key>BundleProgram</key>
+    <string>Contents/MacOS/conso-helper</string>
+    <!-- The Mach service the helper vends and the app connects to. -->
+    <key>MachServices</key>
+    <dict>
+        <key>com.conso.conso.helper</key>
+        <true/>
+    </dict>
+    <!-- Ties this daemon to the app so SMAppService can manage it. -->
+    <key>AssociatedBundleIdentifiers</key>
+    <array>
+        <string>com.conso.conso</string>
+    </array>
+</dict>
+</plist>

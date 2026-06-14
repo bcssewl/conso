@@ -1,0 +1,180 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — Features &amp; Parity</title>
+<style>
+  :root{
+    --bg:radial-gradient(120% 120% at 0% 0%,#eaf1fb,#e7e9f3 45%,#f4eef6);
+    --card:rgba(255,255,255,.72); --border:rgba(0,0,0,.08); --hair:rgba(0,0,0,.07);
+    --text:#1d1d1f; --t2:#52525a; --t3:#8a8a90; --accent:#0a84ff; --accent-soft:rgba(10,132,255,.1);
+    --good:#1aa251; --warn:#bf7d00; --bad:#d83a2e; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:48px 22px 90px;}
+  .wrap{max-width:880px;margin:0 auto;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .logo{width:46px;height:46px;border-radius:12px;background:url("assets/mark-native.png") center/contain no-repeat;flex:none;}
+  h1{font-size:30px;letter-spacing:-.03em;}
+  .crumb{font-size:13px;color:var(--t3);margin-bottom:26px;} .crumb a{color:var(--t3);}
+  h2{font-size:19px;letter-spacing:-.02em;margin:34px 0 12px;padding-top:18px;border-top:1px solid var(--hair);}
+  h3{font-size:15px;margin:20px 0 8px;}
+  p{color:var(--t2);margin:9px 0;} li{color:var(--t2);margin:5px 0;} ul,ol{padding-left:22px;}
+  strong{color:var(--text);font-weight:600;}
+  code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--text);padding:1px 5px;border-radius:5px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;backdrop-filter:blur(20px);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 26px rgba(20,30,60,.06);margin:14px 0;}
+  pre{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--text);background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:18px;overflow:auto;margin:14px 0;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);vertical-align:top;}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);font-weight:600;}
+  td{color:var(--t2);} td strong{color:var(--text);}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;}
+  .tag.y{background:rgba(26,162,81,.15);color:var(--good);} .tag.n{background:rgba(216,58,46,.13);color:var(--bad);}
+  .tag.p{background:rgba(191,125,0,.16);color:var(--warn);}
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:14px 16px;margin:16px 0;font-size:13.5px;}
+  .callout.warn{border-color:var(--warn);background:rgba(191,125,0,.08);}
+  .callout b{color:var(--text);}
+  .lead{font-size:16px;color:var(--t2);}
+  .pill{display:inline-block;font-size:11px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--t2);margin:3px 4px 0 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top"><div class="logo"></div><h1>conso — Features &amp; Parity</h1></div>
+  <div class="crumb"><a href="index.html">← Planning hub</a> · what we build, measured against the paid app</div>
+
+  <p class="lead">conso aims for full feature parity with the paid <strong>Mole for Mac</strong> app (mole.fit) — clean, software, optimize, analyze and monitor — surpasses it in a few honest places, and is straight about the one capability no third-party app can deliver on Apple Silicon: fan control. Everything below is scoped to what a clean-room, non-sandboxed SwiftUI app on macOS&nbsp;26 / M4&nbsp;Max can actually do, using only standard OS tools.</p>
+
+  <div style="margin-top:14px">
+    <span class="pill">Full parity target</span><span class="pill">Clean-room · no GPL</span><span class="pill">No globe / "Worlds" motif</span>
+    <span class="pill">Honest about fan control</span><span class="pill">Preview before delete</span><span class="pill">Verify &amp; fail-loud</span>
+  </div>
+
+  <div class="callout"><b>How to read the matrix.</b> <span class="tag y">Yes</span> = shipped to parity or better · <span class="tag p">Partial</span> = present with a real, named limit · <span class="tag n">No</span> = intentionally absent (with the honest reason). "Paid Mole app" is the commercial mole.fit product — <em>not</em> the GPLv3 Mole CLI, whose code we never read or copy.</div>
+
+  <h2>Parity matrix</h2>
+
+  <h3>Clean</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>System &amp; app caches</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Cache files across user + system locations; "safe to clear" category.</td></tr>
+    <tr><td><strong>Logs &amp; diagnostics</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>System, crash &amp; install logs.</td></tr>
+    <tr><td><strong>Browser data</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Caches &amp; temp files only — keeps history &amp; logins by default.</td></tr>
+    <tr><td><strong>Developer junk</strong></td><td><span class="tag p">Partial</span></td><td><span class="tag y">Yes</span></td><td>First-class category: <code>DerivedData</code>, <code>node_modules</code>, package caches. A conso edge for dev machines.</td></tr>
+    <tr><td><strong>App leftovers</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Remnants of apps already removed (caches, prefs, support files).</td></tr>
+    <tr><td><strong>Trash / Bin</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Empty the Bin as a selectable category.</td></tr>
+    <tr><td><strong>Installer files</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Old <code>.dmg</code>/<code>.pkg</code> and downloaded installers.</td></tr>
+    <tr><td><strong>Preview before delete</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Every item is shown and selectable before anything is removed.</td></tr>
+    <tr><td><strong>Protected-path guard</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Protected paths are never touched; Trash-first (not <code>rm</code>) where feasible.</td></tr>
+  </table>
+
+  <h3>Software</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>Mac App Store updates</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag p">Partial</span></td><td>Detect available updates, then <strong>hand off to the App Store</strong> — headless <code>mas</code> updates need root and are fragile, so conso opens App Store rather than installing silently.</td></tr>
+    <tr><td><strong>Homebrew</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Formulae &amp; casks via <code>brew</code>, run <strong>as the user</strong> (no root); some casks may prompt for an admin password themselves.</td></tr>
+    <tr><td><strong>Sparkle / Electron apps</strong></td><td><span class="tag p">Partial</span></td><td><span class="tag p">Partial</span></td><td>Detect available versions (Sparkle appcast / Electron-Squirrel feeds) and <strong>launch the app</strong> so its own updater runs — conso does not drive another app's updater.</td></tr>
+    <tr><td><strong>App uninstall + leftovers</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag p">Partial</span></td><td>Removes the app plus its remnants — gated by the <strong>App Management</strong> permission; Mac App Store apps are root-owned and can't be deleted as the user.</td></tr>
+    <tr><td><strong>Login / startup items</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag p">Partial</span></td><td>Lists &amp; diagnoses login items / launch agents and deep-links to System Settings, but can only toggle items conso legitimately owns — it can't disable other apps' login items via public API.</td></tr>
+  </table>
+
+  <h3>Optimize</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>Spotlight reindex</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Rebuild the search index.</td></tr>
+    <tr><td><strong>DNS flush</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Clear stale lookups.</td></tr>
+    <tr><td><strong>Quick Look rebuild</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Fix broken previews.</td></tr>
+    <tr><td><strong>Font caches</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Clear to fix glitchy fonts.</td></tr>
+    <tr><td><strong>Launch Services reset</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Repair the "Open With" menu.</td></tr>
+    <tr><td><strong>Purge inactive memory</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag n">No</span></td><td><strong>Intentionally omitted (obsolete on modern macOS).</strong> Apple's compressed-memory VM manages this far better than a manual <code>purge</code>; "freeing" RAM is placebo and can hurt performance.</td></tr>
+    <tr><td><strong>Repair disk permissions</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag n">No</span></td><td><strong>Intentionally omitted (obsolete on modern macOS).</strong> SIP &amp; sealed-system-volume mean macOS owns these permissions; the feature was retired by Apple back in OS&nbsp;X El&nbsp;Capitan.</td></tr>
+  </table>
+
+  <h3>Analyze</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>Disk treemap</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Visual size map of the volume.</td></tr>
+    <tr><td><strong>Drill-down</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Click a block to descend; breadcrumb path back up.</td></tr>
+    <tr><td><strong>Largest folders</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Ranked panel with size bars &amp; file counts.</td></tr>
+    <tr><td><strong>File-type breakdown</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Largest type surfaced (e.g. Video 142&nbsp;GB).</td></tr>
+  </table>
+
+  <h3>Status &amp; monitoring</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>CPU</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Usage, per-core histogram, load.</td></tr>
+    <tr><td><strong>GPU</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Usage &amp; core count via IOKit.</td></tr>
+    <tr><td><strong>Memory</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Used, pressure, swap.</td></tr>
+    <tr><td><strong>Disk</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Used/free, APFS.</td></tr>
+    <tr><td><strong>Network</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Up/down throughput sparkline.</td></tr>
+    <tr><td><strong>Battery health</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Charge, health %, cycle count, time remaining.</td></tr>
+    <tr><td><strong>Thermals (read-only)</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>CPU/GPU temps &amp; fan RPM — <em>read</em> only (see Honest limits).</td></tr>
+    <tr><td><strong>Process list</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Sortable by CPU/MEM; PID; quit a process.</td></tr>
+    <tr><td><strong>Health score</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Single 0–100 score rolled up from live checks.</td></tr>
+  </table>
+
+  <h3>Extras &amp; utilities</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>Menu-bar HUD</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Live CPU/GPU/MEM/NET sparklines + quick actions in a <code>MenuBarExtra</code>.</td></tr>
+    <tr><td><strong>Privacy (cam/mic) monitor</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Indicates when the camera or microphone is in use.</td></tr>
+    <tr><td><strong>Keep Awake</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Prevent display/system sleep on demand (Keep Screen On).</td></tr>
+    <tr><td><strong>Clean Keys (keyboard lock)</strong></td><td><span class="tag n">No</span></td><td><span class="tag y">Yes</span></td><td><strong>conso advantage.</strong> Temporarily locks the keyboard so you can wipe the keys without typing — the paid app lacks this.</td></tr>
+    <tr><td><strong>Clean Screen (display wipe)</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Locks input so you can wipe the display safely.</td></tr>
+    <tr><td><strong>Quick Actions tray</strong></td><td><span class="tag p">Partial</span></td><td><span class="tag y">Yes</span></td><td><strong>conso advantage.</strong> One-tap tray for the common maintenance actions, surfaced in the <code>MenuBarExtra</code>.</td></tr>
+    <tr><td><strong>Large hidden-items reclaimers</strong></td><td><span class="tag n">No</span></td><td><span class="tag y">Yes</span></td><td><strong>conso advantage.</strong> Surfaces &amp; reclaims the big invisible space hogs: APFS local snapshots, old iOS device backups, and Mail attachments — the paid app lacks these.</td></tr>
+    <tr><td><strong>Duplicate &amp; large/old file finder</strong></td><td><span class="tag n">No</span></td><td><span class="tag p">Planned</span></td><td><strong>conso advantage (planned).</strong> Find duplicates and large/old files with preview-before-delete — not in the paid app.</td></tr>
+    <tr><td><strong>Doctor diagnostics</strong></td><td><span class="tag p">Partial</span></td><td><span class="tag y">Yes</span></td><td>Live self-check of permissions, helper, signing, disk &amp; update health — a conso edge (see below).</td></tr>
+    <tr><td><strong>Fan control</strong></td><td><span class="tag n">No*</span></td><td><span class="tag n">No</span></td><td><strong>Impossible on Apple Silicon for any third-party app.</strong> conso reads fan RPM/thermals only. *The paid app's "fan control" is effectively Intel-Mac only.</td></tr>
+  </table>
+
+  <h3>Platform &amp; distribution</h3>
+  <table>
+    <tr><th>Capability</th><th>Paid Mole app</th><th>conso</th><th>Notes</th></tr>
+    <tr><td><strong>Light / dark</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag y">Yes</span></td><td>Each theme honors system appearance.</td></tr>
+    <tr><td><strong>Multiple themes</strong></td><td><span class="tag p">Partial</span></td><td><span class="tag y">Yes</span></td><td>Three built-in themes: Modern Native, Pro Dark, Character.</td></tr>
+    <tr><td><strong>Mac App Store</strong></td><td><span class="tag n">No</span></td><td><span class="tag n">No</span></td><td>Broad disk/system access can't be sandboxed → no MAS for either app.</td></tr>
+    <tr><td><strong>Notarized download</strong></td><td><span class="tag y">Yes</span></td><td><span class="tag p">Partial</span></td><td>conso is personal-first (self-signed, $0). Notarization is roadmapped <em>if</em> it's shared (Developer&nbsp;ID, $99/yr).</td></tr>
+  </table>
+
+  <h2>Where conso goes further</h2>
+  <ul>
+    <li><strong>Three switchable themes + light/dark.</strong> A semantic <code>ThemeStore</code> drives the whole UI — Modern Native (Liquid Glass), Pro Dark (Vercel/Geist mono), and Character (liquid-glass + the conso mascot), each honoring system light/dark. Themes persist across the app.</li>
+    <li><strong>Own clean-room brand.</strong> All logic written fresh against standard OS tools; no Mole code, no GPL obligations, and deliberately none of Mole's globe / solar-system / "Worlds" motif. conso's identity is its own.</li>
+    <li><strong>Doctor — live permission verification &amp; fail-loud.</strong> Rather than trusting a cached "granted," Doctor probes the real state every launch and pre-flights before every operation: Full Disk Access (by reading a known protected path, not the toggle), the privileged helper (XPC ping + <code>SMAppService</code> status), code signing, disk space and update health. Anything missing is surfaced with a button straight to the exact Settings pane — and a clean that would silently skip protected files is stopped, not degraded.</li>
+    <li><strong>Top-centered glass nav.</strong> A single top-centered glass pill nav unifies all five pillars (Clean · Software · Optimize · Analyze · Status), with Doctor and Settings in the trailing corner — a calmer, more native layout than a left sidebar.</li>
+    <li><strong>First-class developer junk.</strong> <code>DerivedData</code>, <code>node_modules</code> and package caches are their own clean category — built for an M4&nbsp;Max dev machine.</li>
+  </ul>
+
+  <h2>Accessibility</h2>
+  <p>Accessibility is a first-class commitment, not an afterthought — conso honors every relevant system setting:</p>
+  <ul>
+    <li><strong>Reduce Transparency</strong> — the Liquid-Glass blur is replaced with a fully opaque fallback so text stays legible.</li>
+    <li><strong>Reduce Motion</strong> — animated transitions and live sparklines are calmed or cross-faded instead of moved.</li>
+    <li><strong>Increase Contrast</strong> — hairlines, borders and tag colors strengthen to meet contrast needs.</li>
+    <li><strong>Dynamic Type</strong> — the UI scales with the system text size rather than locking to fixed points.</li>
+    <li><strong>VoiceOver labels</strong> — every control, stat and row carries a descriptive label and value, so the app is fully narratable.</li>
+  </ul>
+  <div style="margin-top:6px">
+    <span class="pill">Reduce Transparency</span><span class="pill">Reduce Motion</span><span class="pill">Increase Contrast</span><span class="pill">Dynamic Type</span><span class="pill">VoiceOver labels</span>
+  </div>
+
+  <h2>Honest limits</h2>
+  <div class="callout warn"><b>We do not over-promise.</b> The items below are real constraints of the platform and our distribution choice — stated up front, not buried.</div>
+  <ul>
+    <li><strong>Fan control is impossible on Apple Silicon.</strong> Apple exposes no third-party fan-control interface on M-series Macs — the SMC fan APIs that worked on Intel are gone for apps. conso therefore <em>reads</em> fan RPM and thermals only and never claims to set them. The paid Mole app's "fan control" is effectively Intel-Mac only; on Apple Silicon nobody can do it.</li>
+    <li><strong>Some features need Full Disk Access + a privileged helper.</strong> Scanning/cleaning protected folders and building a complete treemap require Full Disk Access. Root-only work — deep cache purge under system paths, certain maintenance routines, and detailed <code>powermetrics</code> sensor reads — runs through a small audited XPC helper installed once via <code>SMAppService</code> (one admin prompt). Without these grants, the affected features are blocked and clearly flagged by Doctor, never silently skipped.</li>
+    <li><strong>Personal-first signing.</strong> conso ships self-signed at $0, so first launch needs the Gatekeeper override: <strong>System Settings → Privacy &amp; Security → Open Anyway</strong> (the right-click → Open shortcut was removed in macOS&nbsp;15). No Apple Developer account means no notarization and no Mac App Store until/unless we move to Developer&nbsp;ID ($99/yr) + Sparkle for sharing.</li>
+  </ul>
+
+  <p style="margin-top:26px;font-size:13px;color:var(--t3)">See also: <a href="architecture.html"><strong>Architecture</strong></a> for how each pillar maps to a module, and the upcoming <strong>Roadmap</strong> for the phased build order.</p>
+
+</div>
+</body>
+</html>

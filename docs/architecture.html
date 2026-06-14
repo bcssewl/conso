@@ -1,0 +1,222 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — Architecture</title>
+<style>
+  :root{
+    --bg:radial-gradient(120% 120% at 0% 0%,#eaf1fb,#e7e9f3 45%,#f4eef6);
+    --card:rgba(255,255,255,.72); --border:rgba(0,0,0,.08); --hair:rgba(0,0,0,.07);
+    --text:#1d1d1f; --t2:#52525a; --t3:#8a8a90; --accent:#0a84ff; --accent-soft:rgba(10,132,255,.1);
+    --good:#1aa251; --warn:#bf7d00; --bad:#d83a2e; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:48px 22px 90px;}
+  .wrap{max-width:880px;margin:0 auto;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .logo{width:46px;height:46px;border-radius:12px;background:url("assets/mark-native.png") center/contain no-repeat;flex:none;}
+  h1{font-size:30px;letter-spacing:-.03em;}
+  .crumb{font-size:13px;color:var(--t3);margin-bottom:26px;} .crumb a{color:var(--t3);}
+  h2{font-size:19px;letter-spacing:-.02em;margin:34px 0 12px;padding-top:18px;border-top:1px solid var(--hair);}
+  h3{font-size:15px;margin:20px 0 8px;}
+  p{color:var(--t2);margin:9px 0;} li{color:var(--t2);margin:5px 0;} ul,ol{padding-left:22px;}
+  strong{color:var(--text);font-weight:600;}
+  code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--text);padding:1px 5px;border-radius:5px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;backdrop-filter:blur(20px);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 26px rgba(20,30,60,.06);margin:14px 0;}
+  pre{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--text);background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:18px;overflow:auto;margin:14px 0;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);vertical-align:top;}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);font-weight:600;}
+  td{color:var(--t2);} td strong{color:var(--text);}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;}
+  .tag.y{background:rgba(26,162,81,.15);color:var(--good);} .tag.n{background:rgba(216,58,46,.13);color:var(--bad);}
+  .tag.p{background:rgba(191,125,0,.16);color:var(--warn);}
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:14px 16px;margin:16px 0;font-size:13.5px;}
+  .callout.warn{border-color:var(--warn);background:rgba(191,125,0,.08);}
+  .callout b{color:var(--text);}
+  .lead{font-size:16px;color:var(--t2);}
+  .pill{display:inline-block;font-size:11px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--t2);margin:3px 4px 0 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top"><div class="logo"></div><h1>conso — Architecture</h1></div>
+  <div class="crumb"><a href="index.html">← Planning hub</a> · the system design we build to</div>
+
+  <p class="lead">conso is a native macOS maintenance app — clean, optimize, analyze and monitor your Mac — built clean-room in Swift/SwiftUI for macOS 26 on Apple Silicon. It ships as one non-sandboxed app plus a small privileged helper, with a three-theme design system. This document is the contract the implementation follows.</p>
+
+  <div style="margin-top:14px">
+    <span class="pill">SwiftUI · macOS 26</span><span class="pill">Apple Silicon</span><span class="pill">Non-sandboxed</span>
+    <span class="pill">Clean-room (no GPL)</span><span class="pill">Personal-first signing</span><span class="pill">3 themes · light/dark</span>
+  </div>
+
+  <h2>1 · Principles</h2>
+  <ul>
+    <li><strong>Clean-room &amp; original.</strong> All logic written fresh; we call only standard OS tools (<code>brew</code>, <code>mas</code>, <code>powermetrics</code>, IOKit, <code>du</code>). No Mole code, no GPL obligations, none of their globe/solar-system motif.</li>
+    <li><strong>Safe by default.</strong> Everything is previewed before deletion; protected paths are never touched; every destructive op is logged and reversible where possible (Trash, not <code>rm</code>, when feasible).</li>
+    <li><strong>Trust nothing cached — verify live.</strong> Permissions and helper state are checked on every launch and pre-flighted before any operation. <strong>Destructive ops fail loud</strong> (a clean must never silently skip); read-only/optional pillars <strong>degrade gracefully</strong> to a visible "unavailable" state. (See §4.)</li>
+    <li><strong>Small, testable units.</strong> Each pillar is an independent module behind a protocol, so the UI, the engines, and the helper can be reasoned about and tested in isolation.</li>
+  </ul>
+
+  <h2>2 · Process &amp; module architecture</h2>
+  <pre>┌───────────────────────────── conso.app  (SwiftUI · non-sandboxed) ─────────────────────────────┐
+│                                                                                                │
+│  App shell ── MenuBarExtra (live HUD)  +  Main Window (top-centered glass pill nav)             │
+│                                                                                                │
+│  Views (SwiftUI)      Clean │ Software │ Optimize │ Analyze │ Status │ Doctor │ Settings        │
+│        │                                                                                        │
+│  ViewModels (@Observable, async)  ── one per pillar, talk to engines, never to the UI directly  │
+│        │                                                                                        │
+│  Core engines (clean-room Swift, protocol-fronted, unit-tested):                                │
+│     Scanner · Cleaner · Uninstaller · DiskMap · DuplicateFinder · Metrics(IOKit) ·              │
+│     Updaters(brew/mas/Sparkle) · Optimizer · Privacy(cam/mic) · Doctor ·                        │
+│     ScreenTools(KeepAwake · CleanKeys · CleanScreen) · QuickActions                             │
+│        │                                                                                        │
+│  PermissionService · ThemeStore · OperationLog (~/Library/Logs/conso)                           │
+└───────────────────────────────────────────┬────────────────────────────────────────────────-─┘
+                                             │  XPC (NSXPCConnection)
+                          ┌──────────────────▼───────────────────┐
+                          │  com.conso.helper  (privileged, root) │
+                          │  registered via SMAppService          │
+                          │  (free Apple Development cert · Team ID)│
+                          │  ONLY genuinely-root jobs:             │
+                          │  root-owned cache purge ·             │
+                          │  elevation maintenance                 │
+                          │  (thermals/fans read from the APP)     │
+                          └───────────────────────────────────────┘</pre>
+
+  <table>
+    <tr><th>Module</th><th>Responsibility</th><th>Talks to</th></tr>
+    <tr><td><strong>Scanner</strong></td><td>Walks caches/logs/build-junk/leftovers; sizes categories; produces a previewable plan.</td><td>filesystem (needs FDA)</td></tr>
+    <tr><td><strong>Cleaner</strong></td><td>Executes a reviewed plan; Trash-first, protected-path guard, per-item result.</td><td>filesystem + helper (root paths)</td></tr>
+    <tr><td><strong>Uninstaller</strong></td><td>Finds an app's remnants across the known locations; removes app + leftovers.</td><td>filesystem, helper</td></tr>
+    <tr><td><strong>DiskMap</strong></td><td>Builds the treemap (sizes + drill-down) via a concurrent directory walk.</td><td>filesystem (FDA)</td></tr>
+    <tr><td><strong>Metrics</strong></td><td>CPU/GPU/mem/disk/net/battery/thermal samples for Status + HUD. <strong>All unprivileged</strong>: thermal/fan via <code>ProcessInfo.thermalState</code>, the <code>com.apple.system.thermalpressurelevel</code> Darwin notification, IOReport + SMC fan RPM. <strong>System-wide GPU % has no public API on Apple Silicon</strong> — best-effort via private IOReport, or out of v1.</td><td>IOKit, IOReport, host_statistics, sysctl, SMC (all in-app, no helper)</td></tr>
+    <tr><td><strong>Updaters</strong></td><td>App updates across Mac App Store, Homebrew, Sparkle feeds, Electron/Squirrel.</td><td><code>mas</code>/<code>softwareupdate</code>, <code>brew</code>, feed URLs</td></tr>
+    <tr><td><strong>Optimizer</strong></td><td>Maintenance routines (Spotlight, DNS, Quick Look, font/Launch Services, etc.).</td><td>system tools + helper for root tasks</td></tr>
+    <tr><td><strong>Privacy</strong></td><td>Camera/mic in-use detection for the HUD.</td><td>CoreMediaIO / system log</td></tr>
+    <tr><td><strong>Doctor</strong></td><td>Live self-check: permissions, helper, signing, disk space, update health. The "verify &amp; fail-loud" hub.</td><td>PermissionService, helper</td></tr>
+    <tr><td><strong>DuplicateFinder</strong></td><td>Duplicate and large/old-file finder (size + content hash); an extension of Analyze.</td><td>filesystem (FDA)</td></tr>
+    <tr><td><strong>ScreenTools</strong></td><td>Keep Awake (caffeinate-style, duration + menu-bar toggle), Clean Keys (lock keyboard/trackpad ~10 s with a countdown overlay for wiping keys), Clean Screen (full display-wipe overlay).</td><td>IOKit power assertions, event-tap, window overlay</td></tr>
+    <tr><td><strong>QuickActions</strong></td><td>Menu-bar HUD tray: Keep Awake · Clean Keys · Clean Screen · Show Hidden Files · Empty Trash.</td><td>ScreenTools, Finder/defaults, AppleScript</td></tr>
+  </table>
+  <p><strong>Large hidden-items reclaimers</strong> (an Analyze/Clean extension): surface big, easily-overlooked space — <strong>APFS local snapshots</strong>, <strong>iOS device backups</strong>, and <strong>Mail attachments</strong>. Because these are recovery data, they are <strong>default-unchecked</strong> and clearly labelled as such before any removal.</p>
+
+  <h2>3 · Theming layer</h2>
+  <p>A <code>ThemeStore</code> drives the whole UI from semantic tokens (background, card, accent, text tiers, materials, corner radius, density, motion) — never hard-coded colors. Three built-in themes, each honoring system light/dark:</p>
+  <ul>
+    <li><strong>Modern Native</strong> — macOS 26 Liquid Glass: neutral materials, edge lensing, restrained accent.</li>
+    <li><strong>Pro Dark</strong> — Vercel/Geist: true black, hairline borders, near-monochrome, mono numerics.</li>
+    <li><strong>Character</strong> — Liquid-glass base + the conso mascot (the running figure in the HUD).</li>
+  </ul>
+  <p>The HTML mockups in <a href="mockups/main-window.html">/mockups</a> are the visual spec; the SwiftUI implementation maps these tokens to a <code>Theme</code> struct + environment value. The logo is a per-theme asset (blue / white / mascot), the app-icon tile is the Dock icon.</p>
+
+  <h3>3.1 · Accessibility <span style="font-size:12px;font-weight:400;color:var(--t3)">— a cross-cutting requirement, not a Phase-5 afterthought</span></h3>
+  <p>A glass-heavy UI fails accessibility audits unless designed for it from the start. We honor the SwiftUI accessibility environment values throughout:</p>
+  <ul>
+    <li><strong>Reduce Transparency</strong> (<code>accessibilityReduceTransparency</code>) — the <code>ThemeStore</code> exposes an <strong>opaque material branch</strong>: when set, glass/blur is replaced with solid token-driven fills.</li>
+    <li><strong>Reduce Motion</strong> (<code>accessibilityReduceMotion</code>) — drop or shorten animated transitions, sparkline tweens, and the mascot run cycle.</li>
+    <li><strong>Increase Contrast</strong> (<code>colorSchemeContrast</code>) — stronger borders/text tiers via the contrast-aware token set.</li>
+    <li><strong>Dynamic Type</strong> — text scales with the user's preferred size; no fixed pixel fonts in semantic UI.</li>
+    <li><strong>VoiceOver</strong> — every control, metric, and destructive action carries an accessibility label + value/hint.</li>
+  </ul>
+
+  <h2>4 · macOS realities <span style="font-size:12px;font-weight:400;color:var(--t3)">— hard constraints, not afterthoughts</span></h2>
+  <div class="callout"><b>Source:</b> distilled from <code>docs/macos-lessons.md</code> (hard-won from a prior shipped macOS app). For a maintenance app whose core value depends on <b>Full Disk Access + a root helper</b>, these are make-or-break.</div>
+
+  <h3>4.1 · Code signing — the #1 time sink</h3>
+  <p><strong>App signing and helper signing are two different problems</strong> — don't assume one cert covers both.</p>
+  <p><strong>App (for TCC / Full Disk Access persistence):</strong></p>
+  <ul>
+    <li><strong>TCC binds a permission to the binary's code identity, not its name.</strong> A self-signed/ad-hoc app effectively binds the grant to the exact binary; change the binary and the grant is <em>silently</em> voided — System Settings still shows it "on."</li>
+    <li><strong>Bake ONE stable self-signed certificate into the project</strong> and sign every dev build with it. Never ad-hoc (ad-hoc mints a fresh identity per build → Full Disk Access resets every rebuild → the "re-grant on every launch" trap). For the app's TCC persistence, a stable self-signed cert is fine.</li>
+    <li><strong>Install to <code>/Applications</code> and run only from there.</strong> Two copies of the same bundle id → the grant attaches to whichever prompted; the other silently records nothing. No <code>dist/</code>-vs-installed drift.</li>
+    <li><strong>Bundle id is fixed</strong> (<code>com.conso.app</code>) across dev and release — UserDefaults, Keychain and TCC are all per-bundle-id and diverge silently otherwise.</li>
+    <li>Untangle a bad grant with <code>tccutil reset SystemPolicyAllFiles com.conso.app</code>, then relaunch and re-grant.</li>
+  </ul>
+  <p><strong>Helper (for the SMAppService privileged daemon):</strong> a hand-rolled self-signed cert is <em>not enough</em>. <code>SMAppService</code> daemon registration is <strong>not supported with ad-hoc</strong> and is unproven/undocumented with a self-signed cert that has <strong>no Team ID</strong>. The realistic minimum is an <strong>Apple-issued certificate with a Team ID</strong> — a <strong>free Apple Development certificate</strong> (any free Apple ID, still $0, <em>not</em> the $99 Developer Program) — used to sign the <strong>app and the helper identically</strong>. This must be proven before anything depends on the daemon (see roadmap Phase 0 spike).</p>
+  <div class="callout"><b>Fallback if the daemon proves unworkable:</b> the genuinely root-only tasks are few. An Authorization Services one-shot privileged tool, or <code>osascript … with administrator privileges</code> per operation, can avoid a persistent daemon entirely (at the cost of a prompt per elevated action).</div>
+
+  <h3>4.2 · Permissions model &amp; UX</h3>
+  <table>
+    <tr><th>Permission</th><th>Why</th><th>How we verify (live)</th></tr>
+    <tr><td><strong>Full Disk Access</strong></td><td>Scan/clean/treemap protected folders</td><td>Attempt to read a protected path conso actually needs (e.g. a protected user-data folder it scans, such as <code>~/Library/Mail</code> or <code>~/Library/Safari</code>) — <em>not</em> the SIP-protected TCC database, and <em>not</em> the toggle. Distinguish <strong>exists-but-denied</strong> (<code>EPERM</code>/<code>EACCES</code>) from <strong>absent</strong> (<code>ENOENT</code>) — only the former means FDA is missing.</td></tr>
+    <tr><td><strong>Privileged helper</strong></td><td>Root-only purge, maintenance, deep sensors</td><td>Ping the XPC service; check <code>SMAppService</code> status.</td></tr>
+    <tr><td><strong>Notifications</strong></td><td>Task-finished alerts (optional)</td><td>UNUserNotificationCenter settings.</td></tr>
+  </table>
+  <ul>
+    <li><strong>Ask everything up front</strong> in onboarding ("Enable All") — never lazy per-feature prompts that hide a missing grant until mid-task.</li>
+    <li><strong>Verify on launch &amp; pre-flight before every operation.</strong> Doctor surfaces anything missing with a button to the exact Settings pane.</li>
+    <li><strong>Fail loud — but scoped to destructive ops.</strong> A <em>destructive</em> op (clean, uninstall) must <strong>never silently skip</strong> protected files because FDA lapsed — detect and stop; that's the worst bug class. <em>Read-only / optional</em> pillars (Updaters, deep sensors, a helper hiccup — including the known macOS 26 SMAppService XPC bug) should <strong>degrade gracefully</strong>: show a visible "unavailable" state, not hard-block the whole app.</li>
+  </ul>
+
+  <h3>4.3 · Entitlements, sandbox &amp; usage strings</h3>
+  <ul>
+    <li><strong>Non-sandboxed</strong> — broad disk/system access can't run sandboxed → <strong>no Mac App Store</strong>; Developer-ID/direct only.</li>
+    <li><strong>Hardened runtime</strong> with <code>com.apple.security.cs.disable-library-validation</code> only if we load third-party dylibs; <code>com.apple.security.automation.apple-events</code> if we script Finder (e.g. empty Trash).</li>
+    <li><strong>Info.plist usage strings or instant SIGABRT:</strong> <code>NSAppleEventsUsageDescription</code> (Finder/automation), <code>NSUserNotificationsUsageDescription</code> (notifications). Add each before requesting that capability.</li>
+  </ul>
+
+  <h3>4.4 · Distribution &amp; packaging</h3>
+  <ul>
+    <li><strong>Personal-first:</strong> $0. The app uses a stable <strong>self-signed</strong> cert for TCC persistence; the helper requires a <strong>free Apple Development cert (Team ID)</strong> for SMAppService (see §4.1) — both still $0, no Developer Program needed for personal use.</li>
+    <li><strong>First-launch friction is worse on macOS 26 than just "Open Anyway."</strong> For an un-notarized app it's now a multi-dialog dance (an initial block, then <strong>System Settings → Privacy &amp; Security → Open Anyway</strong>, then an admin-password confirmation; right-click→Open was removed in macOS 15). Tolerable for yourself once — but the moment <em>anyone else</em> installs it, this is unacceptable, so notarization (next bullet / roadmap Phase 6) is effectively required for sharing.</li>
+    <li><strong>Later (if shared):</strong> Apple Developer Program ($99/yr) → Developer ID + notarization; add Sparkle and <strong>bump <code>CFBundleVersion</code> every release</strong> (Sparkle compares build number, not marketing version).</li>
+    <li>SwiftPM resource bundles at the <code>.app</code> root so <code>Bundle.module</code> resolves; launch dev builds via <code>open</code> (not exec'ing the inner binary, which breaks usage-string attribution); <code>@main</code> entry is a synchronous <code>main()</code>.</li>
+  </ul>
+
+  <h2>5 · Privileged helper</h2>
+  <p>A minimal, audited XPC helper registered with <strong>SMAppService</strong> (modern replacement for SMJobBless), installed once with a single admin prompt. It exposes a narrow, typed interface and does <em>only</em> what <strong>genuinely needs root</strong>:</p>
+  <ul>
+    <li>Purge caches/logs under root-owned/system paths the app user can't touch.</li>
+    <li>Run maintenance routines that require elevation (some <code>periodic</code>/cache rebuilds, permissions repair) and elevation maintenance.</li>
+  </ul>
+  <p><strong>Thermal &amp; fan reads do NOT need the helper</strong> and have moved to the unprivileged app: the Darwin notification <code>com.apple.system.thermalpressurelevel</code>, <code>ProcessInfo.thermalState</code>, IOReport sampling, and SMC fan-RPM reads all work <strong>without root</strong>. Reserving the helper for genuinely root-only work keeps its attack surface minimal. (<code>powermetrics</code> still needs root, but for conso's metrics it isn't required — IOReport covers it from the app.)</p>
+  <p>Everything else stays in the unprivileged app.</p>
+  <h3>5.1 · XPC security</h3>
+  <ul>
+    <li><strong>Validate the caller from the audit token, never the PID</strong> (PID is reusable/spoofable). Set <code>NSXPCListener</code> / <code>NSXPCConnection.setCodeSigningRequirement(_:)</code> with a requirement <strong>pinned to our Team ID + bundle id</strong>, evaluated against the connection's audit token.</li>
+    <li>Takes <strong>structured commands</strong> (a typed interface), <strong>never arbitrary shell</strong>, and logs every action to <code>~/Library/Logs/conso/operations.log</code>.</li>
+    <li><strong>The helper must never set <code>com.apple.security.cs.disable-library-validation</code></strong> — root + unvalidated libraries is a local-privilege-escalation gift. Keep it a single, hardened, library-validated binary with no third-party dylibs.</li>
+  </ul>
+  <p><strong>Fan control is intentionally absent</strong> — not possible on Apple Silicon; we read fan RPM/thermals only (and now from the app, not the helper).</p>
+
+  <h2>6 · Data flow — a clean operation</h2>
+  <pre>Scanner.scan()  ──►  Plan (categories, sizes, per-item paths)  ──►  UI preview (user selects)
+                                                                          │
+                                            user confirms ◄───────────────┘
+                                                  │
+                  Cleaner.execute(plan):  protected-path guard ► Trash-first ► (root items ► helper via XPC)
+                                                  │
+                              per-item results ► OperationLog ► UI summary ("11.6 GB reclaimed")</pre>
+  <p>Read-only pillars (Status, Analyze) follow the same shape minus the mutation step. Status/HUD sampling runs on a timer with a 60-second ring buffer per metric.</p>
+
+  <h2>7 · Tech stack &amp; project layout</h2>
+  <table>
+    <tr><th>Concern</th><th>Choice</th></tr>
+    <tr><td>UI</td><td>SwiftUI (macOS 26), <code>MenuBarExtra</code> + <code>WindowGroup</code>, <code>@Observable</code> view models</td></tr>
+    <tr><td>Metrics</td><td>IOKit, <code>host_statistics</code>, <code>sysctl</code>; <code>powermetrics</code> via helper</td></tr>
+    <tr><td>Helper</td><td>SMAppService XPC, Swift, signed with a <strong>free Apple Development cert (Team ID)</strong> — app + helper identical; audit-token code-signing requirement; never disables library validation</td></tr>
+    <tr><td>External tools</td><td><code>brew</code>, <code>mas</code>, <code>softwareupdate</code>, Sparkle feeds — shelled out via <code>Process</code></td></tr>
+    <tr><td>Build</td><td>Xcode project, stable self-signed cert in config, fixed bundle id, monotonic build number</td></tr>
+  </table>
+  <pre>conso/
+  conso/                 app target (Views/ ViewModels/ Theme/ Services/)
+  ConsoCore/             SwiftPM package — engines (Scanner, Cleaner, … Doctor), unit-tested
+  ConsoHelper/           privileged XPC helper target
+  Resources/Assets.xcassets  (AppIcon = blue-c-pulse .appiconset, theme marks)
+  docs/                  this plan (mockups + docs)</pre>
+
+  <div class="callout warn"><b>Open decisions</b> for the roadmap: (1) confirm bundle id <code>com.conso.app</code>; (2) personal-only now vs notarize-ready later; (3) which Optimize routines truly need the helper vs run as user. These are resolved at the start of implementation, not now.</div>
+
+  <p style="margin-top:26px;font-size:13px;color:var(--t3)">Next docs: <strong>Features + Parity Matrix</strong> and <strong>Roadmap</strong> → then the implementation plan.</p>
+
+</div>
+</body>
+</html>

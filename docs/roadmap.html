@@ -1,0 +1,189 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>conso — Roadmap</title>
+<style>
+  :root{
+    --bg:radial-gradient(120% 120% at 0% 0%,#eaf1fb,#e7e9f3 45%,#f4eef6);
+    --card:rgba(255,255,255,.72); --border:rgba(0,0,0,.08); --hair:rgba(0,0,0,.07);
+    --text:#1d1d1f; --t2:#52525a; --t3:#8a8a90; --accent:#0a84ff; --accent-soft:rgba(10,132,255,.1);
+    --good:#1aa251; --warn:#bf7d00; --bad:#d83a2e; --mono:ui-monospace,"SF Mono",Menlo,monospace;
+  }
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:-apple-system,"SF Pro Text",system-ui,sans-serif;background:var(--bg);color:var(--text);
+    -webkit-font-smoothing:antialiased;line-height:1.6;padding:48px 22px 90px;}
+  .wrap{max-width:880px;margin:0 auto;}
+  a{color:var(--accent);text-decoration:none;} a:hover{text-decoration:underline;}
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:6px;}
+  .logo{width:46px;height:46px;border-radius:12px;background:url("assets/mark-native.png") center/contain no-repeat;flex:none;}
+  h1{font-size:30px;letter-spacing:-.03em;}
+  .crumb{font-size:13px;color:var(--t3);margin-bottom:26px;} .crumb a{color:var(--t3);}
+  h2{font-size:19px;letter-spacing:-.02em;margin:34px 0 12px;padding-top:18px;border-top:1px solid var(--hair);}
+  h3{font-size:15px;margin:20px 0 8px;}
+  p{color:var(--t2);margin:9px 0;} li{color:var(--t2);margin:5px 0;} ul,ol{padding-left:22px;}
+  strong{color:var(--text);font-weight:600;}
+  code{font-family:var(--mono);font-size:.86em;background:var(--accent-soft);color:var(--text);padding:1px 5px;border-radius:5px;}
+  .card{background:var(--card);border:1px solid var(--border);border-radius:14px;padding:18px 20px;backdrop-filter:blur(20px);
+    box-shadow:0 1px 2px rgba(0,0,0,.04),0 10px 26px rgba(20,30,60,.06);margin:14px 0;}
+  pre{font-family:var(--mono);font-size:12px;line-height:1.5;color:var(--text);background:var(--card);border:1px solid var(--border);
+    border-radius:14px;padding:18px;overflow:auto;margin:14px 0;}
+  table{width:100%;border-collapse:collapse;margin:14px 0;font-size:13.5px;}
+  th,td{text-align:left;padding:9px 12px;border-bottom:1px solid var(--hair);vertical-align:top;}
+  th{font-size:11px;text-transform:uppercase;letter-spacing:.05em;color:var(--t3);font-weight:600;}
+  td{color:var(--t2);} td strong{color:var(--text);}
+  .tag{display:inline-block;font-size:11px;font-weight:700;padding:2px 8px;border-radius:6px;}
+  .tag.y{background:rgba(26,162,81,.15);color:var(--good);} .tag.n{background:rgba(216,58,46,.13);color:var(--bad);}
+  .tag.p{background:rgba(191,125,0,.16);color:var(--warn);}
+  .callout{border-left:3px solid var(--accent);background:var(--accent-soft);border-radius:0 12px 12px 0;padding:14px 16px;margin:16px 0;font-size:13.5px;}
+  .callout.warn{border-color:var(--warn);background:rgba(191,125,0,.08);}
+  .callout b{color:var(--text);}
+  .lead{font-size:16px;color:var(--t2);}
+  .pill{display:inline-block;font-size:11px;font-weight:600;background:var(--card);border:1px solid var(--border);border-radius:999px;padding:4px 11px;color:var(--t2);margin:3px 4px 0 0;}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <div class="top"><div class="logo"></div><h1>conso — Roadmap</h1></div>
+  <div class="crumb"><a href="index.html">← Planning hub</a> · the phased build plan</div>
+
+  <p class="lead">A phased plan where <strong>every phase ends in a runnable, signed app installed to <code>/Applications</code></strong> — never a half-wired branch. The hard-won macOS lessons (stable signing, live permission checks, run-from-/Applications) are applied from <strong>Phase 0</strong>, not bolted on later. Phases are described by deliverable, not dates; each one earns its keep before we move on.</p>
+
+  <div style="margin-top:14px">
+    <span class="pill">Every phase ships</span><span class="pill">Lessons-first</span><span class="pill">Self-signed → notarize-ready</span>
+    <span class="pill">7 phases (6 optional)</span><span class="pill">Runnable always</span>
+  </div>
+
+  <div class="callout"><b>Operating rule:</b> the <code>main</code> branch is always installable and grant-stable. We add a pillar only when the previous one runs end-to-end from <code>/Applications</code> with permissions verified live. No "it'll work once we wire it up" — if it isn't running, the phase isn't done.</div>
+
+  <h2>1 · The phases at a glance</h2>
+  <table>
+    <tr><th>Phase</th><th>Ships</th><th>Needs</th></tr>
+    <tr><td><strong>0 · Foundation</strong></td><td>Empty-but-themeable signed app + SMAppService spike</td><td><span class="tag p">free Apple ID</span></td></tr>
+    <tr><td><strong>1 · Status + HUD</strong></td><td>Live system monitor</td><td><span class="tag y">none</span></td></tr>
+    <tr><td><strong>2 · Permissions + Doctor</strong></td><td>Onboarding, live verification, helper ping</td><td><span class="tag p">FDA · helper</span></td></tr>
+    <tr><td><strong>3 · Clean + Analyze</strong></td><td>Scan/clean + disk treemap</td><td><span class="tag p">FDA · helper</span></td></tr>
+    <tr><td><strong>4 · Software + Optimize</strong></td><td>Updates, uninstall, maintenance</td><td><span class="tag p">helper · tools</span></td></tr>
+    <tr><td><strong>5 · Extras + polish</strong></td><td>Privacy, screen tools, settings, a11y</td><td><span class="tag p">cam/mic</span></td></tr>
+    <tr><td><strong>6 · Share-ready</strong> <span style="font-size:10px;color:var(--t3)">(optional)</span></td><td>Notarized, auto-updating build</td><td><span class="tag n">$99/yr</span></td></tr>
+  </table>
+
+  <h2>2 · Phase-by-phase</h2>
+
+  <div class="card">
+    <h3>Phase 0 — Foundation <span style="font-size:12px;font-weight:400;color:var(--t3)">— get the traps out of the way first</span></h3>
+    <p><strong>Goal:</strong> a correctly-signed, themeable app shell that survives rebuilds without losing future permission grants.</p>
+    <p><strong>Ships:</strong> an empty-but-themeable <code>conso.app</code> in <code>/Applications</code> — opens, switches all 3 themes + light/dark, shows the menu-bar item. Nothing functional yet, everything correct.</p>
+    <ul>
+      <li>Xcode project (<strong>not</strong> a bare SwiftPM executable) with a <strong>fixed bundle id <code>com.conso.app</code></strong> for dev and release alike.</li>
+      <li>Bake <strong>ONE stable self-signed certificate</strong> into the build config and sign every build with it — never ad-hoc. (Fine for the <em>app's</em> TCC persistence; the helper needs more — see the spike below.)</li>
+      <li>A <code>make install</code> / build-phase dev workflow that copies to <code>/Applications</code> and launches via <code>open</code> — the canonical run path from day one.</li>
+      <li>App shell: <code>MenuBarExtra</code> (live HUD host) + main window with the <strong>top-centered glass pill nav</strong> from the mockups.</li>
+      <li><code>ThemeStore</code> with semantic tokens, all 3 themes (Modern Native / Pro Dark / Character) honoring system light/dark, plus the per-theme logo + app-icon assets. ThemeStore exposes an <strong>opaque material branch</strong> for Reduce Transparency from the start.</li>
+      <li>Skeleton view-model + engine protocols (empty implementations) so later phases slot in behind interfaces.</li>
+      <li><strong>SMAppService daemon registration spike</strong> — a throwaway helper that we actually <strong>register and XPC-ping</strong>, to prove the privileged-daemon mechanism <em>before</em> any pillar depends on it. Sign app + helper identically with a <strong>free Apple Development cert (Team ID)</strong> — a hand-rolled self-signed cert (no Team ID) is unproven for SMAppService daemons (and ad-hoc is unsupported). <strong>If the free Development cert turns out insufficient on macOS 26, Developer ID moves earlier</strong> (out of the optional Phase 6). Fallback if the daemon proves unworkable: the few root tasks can go through an Authorization Services one-shot tool or <code>osascript … with administrator privileges</code> instead of a persistent daemon.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> <span class="tag p">stable cert</span> a named self-signed cert keeps TCC grants across rebuilds (no "re-grant every launch"). <span class="tag p">Team-ID cert for helper</span> the SMAppService daemon needs an Apple-issued (free Development) cert, proven by spike. <span class="tag p">fixed bundle id</span> UserDefaults/Keychain/TCC are per-bundle-id — pin it now. <span class="tag p">run from /Applications</span> launch via <code>open</code> from <code>/Applications</code> only, so grants attach to the one true copy. Doing this in Phase 0 means <em>nothing</em> we build later has to be re-signed or re-pathed.</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 1 — Status + HUD <span style="font-size:12px;font-weight:400;color:var(--t3)">— the fastest path to a genuinely useful build</span></h3>
+    <p><strong>Goal:</strong> a live system monitor that's worth keeping open, before we touch a single permission prompt.</p>
+    <p><strong>Ships:</strong> a real-time Status dashboard + menu-bar HUD — installable and useful with <strong>zero special permissions</strong>.</p>
+    <ul>
+      <li><strong>Metrics</strong> engine: CPU/GPU/mem/disk/net/battery/thermal via <code>IOKit</code>, <code>IOReport</code>, <code>host_statistics</code>, <code>sysctl</code> (all unprivileged) on a sampling timer with a 60-second ring buffer per metric. <strong>Thermal/fan reads are unprivileged in the app</strong> — <code>ProcessInfo.thermalState</code>, the <code>com.apple.system.thermalpressurelevel</code> Darwin notification, IOReport, and SMC fan RPM — no helper needed. <strong>System-wide GPU % has no public API on Apple Silicon</strong>: ship it best-effort (private IOReport) or leave it out of v1.</li>
+      <li>Status view: health score hero, metric cards (temps, histogram, area charts), and a live process table — matching <code>mockups/main-window.html</code>.</li>
+      <li>Menu-bar HUD with sparklines, driven by the same <code>Metrics</code> stream.</li>
+      <li>First wiring of a real engine behind its protocol → proves the architecture end-to-end.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> deliberately permission-free, so this phase ships fast and we don't gate "useful" behind the FDA/helper work. Thermals, fans and even GPU come from the <em>app</em> via IOReport/SMC — the helper isn't needed for metrics at all. If a deep sensor or the helper ever hiccups (incl. the known macOS 26 SMAppService XPC bug), the affected card <strong>degrades gracefully</strong> to "unavailable", never hard-blocking the dashboard.</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 2 — Permissions, Doctor &amp; Onboarding <span style="font-size:12px;font-weight:400;color:var(--t3)">— verify-live infrastructure</span></h3>
+    <p><strong>Goal:</strong> the permission + helper machinery that every later destructive pillar depends on — built once, correctly.</p>
+    <p><strong>Ships:</strong> first-run onboarding, a Doctor self-check, and a helper that installs and answers an XPC ping.</p>
+    <ul>
+      <li><code>PermissionService</code> with <strong>live verification</strong>: confirm Full Disk Access by <em>reading a protected path conso actually needs</em> (e.g. <code>~/Library/Mail</code> or <code>~/Library/Safari</code>), <em>not</em> the SIP-protected TCC database, and never by trusting the System Settings toggle or a cached "granted". Distinguish <strong>exists-but-denied (<code>EPERM</code>)</strong> from <strong>absent (<code>ENOENT</code>)</strong> — only the former means FDA is missing.</li>
+      <li>Onboarding flow with <strong>"Enable All"</strong> — ask for every grant up front, with a deep-link to the exact Settings pane (and the <strong>first-launch friction</strong> note: on macOS 26 an un-notarized app is a multi-dialog dance, not just "Open Anyway").</li>
+      <li><code>SMAppService</code> privileged-helper skeleton (<code>com.conso.helper</code>, built on the Phase 0 spike) + <strong>XPC ping</strong> round-trip; the helper validates the caller via <code>NSXPCConnection.setCodeSigningRequirement(_:)</code> evaluated from the connection's <strong>audit token (never PID)</strong>, pinned to our Team ID + bundle id, and <strong>never sets <code>disable-library-validation</code></strong>.</li>
+      <li><strong>Doctor</strong>: live self-check of permissions, helper status, signing, disk space, update health — <strong>fail-loud</strong>, each issue with a button to its fix.</li>
+      <li>Add Info.plist usage strings (<code>NSAppleEventsUsageDescription</code>, <code>NSUserNotificationsUsageDescription</code>) <em>before</em> requesting those capabilities.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> <span class="tag p">verify live</span> a read of a path conso needs (not the TCC db) is the only truth, distinguishing denied from absent; the toggle and the cache both lie. <span class="tag p">ask up front</span> no lazy per-feature prompts that hide a missing grant mid-task. <span class="tag p">pre-flight</span> Doctor + per-op checks catch a lapsed grant before an operation, not during. <span class="tag p">audit-token XPC</span> code-signing requirement from the audit token, never PID. <span class="tag p">first-launch friction</span> documented in onboarding (worse than "Open Anyway" on macOS 26; right-click→Open was removed in macOS 15).</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 3 — Clean + Analyze <span style="font-size:12px;font-weight:400;color:var(--t3)">— the first destructive pillar, on safe rails</span></h3>
+    <p><strong>Goal:</strong> reclaim space and visualize disk usage — safely, on top of the verified-permission base from Phase 2.</p>
+    <p><strong>Ships:</strong> a working Clean flow (preview → confirm → reclaim) and an interactive disk treemap.</p>
+    <ul>
+      <li><strong>Scanner</strong>: walks caches/logs/build-junk/leftovers, sizes categories, produces a previewable plan.</li>
+      <li><strong>Cleaner</strong>: executes a reviewed plan — <strong>Trash-first</strong>, protected-path guard, per-item result; root-owned paths go through the helper via XPC.</li>
+      <li>Clean view: reclaimable-space ring + categorized list (<code>mockups/clean.html</code>), reassuring copy, nothing deleted without explicit confirm.</li>
+      <li><strong>DiskMap</strong>: concurrent directory walk → treemap with drill-down + largest-folders panel (<code>mockups/analyze.html</code>).</li>
+      <li>Pre-flight FDA + helper before any scan/clean; surface a missing grant via Doctor, never degrade silently.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> <span class="tag p">fail loud (destructive)</span> a clean/uninstall that silently skips protected files because FDA lapsed is the worst bug class — detect and stop; this strict rule is reserved for destructive ops. <span class="tag p">degrade (read-only)</span> Analyze/treemap and optional sensors show "unavailable", not a hard block. <span class="tag p">pre-flight</span> verify FDA + helper live before walking, not after. Trash-first keeps every op reversible.</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 4 — Software + Optimize <span style="font-size:12px;font-weight:400;color:var(--t3)">— external tools + root maintenance</span></h3>
+    <p><strong>Goal:</strong> keep installed software current and run the maintenance routines, splitting user-level work from helper-only work.</p>
+    <p><strong>Ships:</strong> a Software pane (updates + uninstall) and an Optimize pane (maintenance routines).</p>
+    <ul>
+      <li><strong>Updaters</strong>: surface updates across Mac App Store (<code>mas</code>/<code>softwareupdate</code>), Homebrew (<code>brew</code>), Sparkle feeds, and Electron/Squirrel — shelled out via <code>Process</code> (<code>mockups/software.html</code>).</li>
+      <li><strong>Uninstaller</strong>: find an app's remnants across known locations; remove app + leftovers + login items.</li>
+      <li><strong>Optimizer</strong>: maintenance routines (Spotlight, DNS, Quick Look, font/Launch Services, etc.) — user-level where possible, helper for root-only tasks (<code>mockups/optimize.html</code>).</li>
+      <li>Resolve, per routine, the open decision: does it truly need root (helper) or can it run as the user?</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> the helper takes <strong>structured commands, never arbitrary shell</strong>, logs every action to <code>~/Library/Logs/conso/operations.log</code>, and is reserved for <strong>genuinely root-only work</strong> (root-owned cache purge, elevation maintenance) — thermals/fans are read by the app, not the helper. Fan control stays absent — Apple Silicon exposes read-only thermals.</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 5 — Extras + polish <span style="font-size:12px;font-weight:400;color:var(--t3)">— round out and harden</span></h3>
+    <p><strong>Goal:</strong> the smaller pillars plus the cross-cutting polish that makes it feel native.</p>
+    <p><strong>Ships:</strong> Privacy monitor, screen/keyboard utilities, the Quick Actions tray, reclaimers, a duplicate finder, a full Settings pane, accessibility, and a performance pass.</p>
+    <ul>
+      <li><strong>Privacy</strong>: camera/mic in-use detection in the HUD (CoreMediaIO / system log).</li>
+      <li><strong>ScreenTools</strong>: <strong>Keep Awake</strong> (caffeinate-style, duration + menu-bar toggle), <strong>Clean Keys</strong> (lock keyboard/trackpad ~10 s with a countdown overlay so you can wipe the keys), <strong>Clean Screen</strong> (full display-wipe overlay).</li>
+      <li><strong>Quick Actions tray</strong> in the menu-bar HUD: Keep Awake · Clean Keys · Clean Screen · Show Hidden Files · Empty Trash.</li>
+      <li><strong>Large hidden-items reclaimers</strong> (Analyze/Clean extension): APFS local snapshots, iOS device backups, Mail attachments — recovery data, <strong>default-unchecked</strong> and clearly labelled.</li>
+      <li><strong>Duplicate &amp; large/old-file finder</strong> (extension of Analyze): size + content-hash matching.</li>
+      <li>Full Settings: theme, density, launch-at-login, notifications, helper management.</li>
+      <li><strong>Accessibility</strong> wired through SwiftUI environment values: <strong>Reduce Transparency</strong> (opaque material branch in <code>ThemeStore</code>), <strong>Reduce Motion</strong>, <strong>Increase Contrast</strong>, <strong>Dynamic Type</strong>, and <strong>VoiceOver</strong> labels on every control + metric — an ongoing requirement since Phase 1, hardened here. Plus a performance pass on sampling + the directory walk.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> any new capture needs its usage string + matching hardened-runtime entitlement <em>before</em> it's requested, or the app SIGABRTs on first use. <span class="tag p">a11y is cross-cutting</span> the opaque/reduced-motion/contrast branches were designed into the ThemeStore in Phase 0, not retrofitted now.</p>
+  </div>
+
+  <div class="card">
+    <h3>Phase 6 — Share-ready <span style="font-size:12px;font-weight:400;color:var(--t3)">— optional, only if we distribute</span></h3>
+    <p><strong>Goal:</strong> turn the personal build into something others can install and auto-update. Personal-only is fine un-notarized — but on macOS 26 first launch for others is a multi-dialog block + admin password, so <strong>notarization is effectively required the moment anyone else installs it</strong>.</p>
+    <p><strong>Ships:</strong> a notarized, Developer-ID-signed, auto-updating build.</p>
+    <ul>
+      <li><strong>Apple Developer Program</strong> ($99/yr) → <strong>Developer ID</strong> signing + <strong>notarization</strong> (no Mac App Store — we're non-sandboxed).</li>
+      <li><strong>Sparkle</strong> auto-update wired to a release feed.</li>
+      <li><strong>Bump <code>CFBundleVersion</code> every release, monotonically</strong> — Sparkle compares build number, not marketing version, or it says "up to date" forever.</li>
+    </ul>
+    <p style="margin-top:10px"><strong>Lessons applied:</strong> <span class="tag p">stable cert</span> signing every release with one shared identity is what lets users keep their grants + Gatekeeper approval across updates. Until we have the account, a full notarize pipeline is wasted effort — that's why it's last and optional.</p>
+  </div>
+
+  <h2>3 · Risks &amp; how we de-risk</h2>
+  <table>
+    <tr><th>Risk</th><th>How we de-risk</th></tr>
+    <tr><td><strong>TCC / signing resets</strong> — grants silently vanish on rebuild.</td><td>One stable self-signed cert baked into config from Phase 0; fixed bundle id; <code>tccutil reset SystemPolicyAllFiles com.conso.app</code> as the known untangle command.</td></tr>
+    <tr><td><strong>Helper signing / SMAppService unproven</strong> — daemon won't register, or XPC is insecure.</td><td>Phase 0 <strong>SMAppService registration spike</strong> proves it (register + ping) on a <strong>free Apple Development cert with Team ID</strong> — self-signed/no-Team-ID is unproven, ad-hoc unsupported; if insufficient on macOS 26, Developer ID moves earlier. App + helper signed identically; caller validated via a code-signing requirement from the <strong>audit token</strong>; helper never disables library validation. Fallback: Authorization Services / <code>osascript … with administrator privileges</code> for the few root tasks.</td></tr>
+    <tr><td><strong>FDA UX</strong> — a lapsed grant degrades a destructive clean silently.</td><td>Live verification by reading a path conso needs (not the TCC db), distinguishing denied (<code>EPERM</code>) from absent (<code>ENOENT</code>); "Enable All" up front, pre-flight before every op, Doctor failing loud with a deep-link — never trust the toggle. Read-only pillars degrade to "unavailable" rather than hard-block.</td></tr>
+    <tr><td><strong>Two-copies drift</strong> — grant attaches to the wrong bundle.</td><td>Install-to-/Applications dev workflow from Phase 0; launch via <code>open</code> only; confirm the running path, never run a <code>dist/</code> copy.</td></tr>
+    <tr><td><strong>Scope creep</strong> — pillars half-wired, nothing shippable.</td><td>The operating rule: each phase must run end-to-end from <code>/Applications</code> before the next starts. Permission-free Status (Phase 1) lands value early; helper-dependent pillars come only after the Phase 2 base is proven.</td></tr>
+  </table>
+
+  <div class="callout warn"><b>Open decisions carried from Architecture §7:</b> (1) confirm bundle id <code>com.conso.app</code>; (2) personal-only now vs notarize-ready later (Phase 6); (3) which Optimize routines truly need the helper vs run as user (Phase 4). These are resolved at the start of implementation, not deferred indefinitely.</div>
+
+  <p style="margin-top:26px;font-size:13px;color:var(--t3)">Next step: the <strong>implementation plan</strong> — turning Phase 0 into concrete files, targets, and the first build-and-install. See <strong>writing-plans</strong>.</p>
+
+</div>
+</body>
+</html>
