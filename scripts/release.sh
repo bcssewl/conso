@@ -160,6 +160,10 @@ echo "==> generating EdDSA-signed appcast"
 FEED_DIR="$DIST_DIR/feed"
 rm -rf "$FEED_DIR"; mkdir -p "$FEED_DIR"
 cp "$DMG" "$FEED_DIR/"
+# Start fresh — generate_appcast MERGES into an existing output file, which would
+# otherwise accumulate stale items from previous runs (all pointing at the same URL
+# with mismatched lengths/signatures). One release -> one item.
+rm -f "$DIST_DIR/appcast.xml"
 "$BIN_DIR/generate_appcast" \
     --download-url-prefix "$STABLE_FEED_PREFIX/$TAG/" \
     -o "$DIST_DIR/appcast.xml" \
