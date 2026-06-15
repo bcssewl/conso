@@ -123,6 +123,34 @@
   .btn-ghost { border: 1px solid var(--line); color: var(--fg); }
   .btn-ghost:hover { border-color: var(--muted); background: var(--hover); transform: translateY(-2px); }
 
+  /* ── first-launch download modal ─────────────────────────── */
+  .dlmodal { position: fixed; inset: 0; z-index: 300; display: none; align-items: center; justify-content: center;
+    padding: 24px; background: rgba(5,5,5,0.74); backdrop-filter: blur(9px) saturate(120%); -webkit-backdrop-filter: blur(9px) saturate(120%); }
+  .dlmodal.open { display: flex; animation: dlfade .2s ease; }
+  .dlmodal-card { position: relative; width: 100%; max-width: 470px; background: var(--card); border: 1px solid var(--line);
+    border-radius: 16px; padding: 30px 30px 26px; box-shadow: 0 30px 90px rgba(0,0,0,0.66); animation: dlrise .28s cubic-bezier(.2,.7,.2,1); }
+  .dlmodal-x { position: absolute; top: 15px; right: 15px; width: 28px; height: 28px; display: grid; place-items: center;
+    border: 1px solid var(--line); background: transparent; color: var(--muted); border-radius: 8px; cursor: pointer; transition: color .2s, border-color .2s, background .2s; }
+  .dlmodal-x:hover { color: var(--fg); border-color: var(--muted); background: var(--hover); }
+  .dlmodal h3 { font-size: 20px; font-weight: 600; letter-spacing: -0.01em; margin: 9px 0 8px; }
+  .dlmodal-lead { font-size: 13px; color: var(--fg-dim); line-height: 1.62; margin-bottom: 19px; }
+  .dlmodal-steps { list-style: none; display: flex; flex-direction: column; gap: 13px; margin-bottom: 17px; }
+  .dlmodal-steps li { display: flex; gap: 12px; align-items: flex-start; font-size: 13px; color: var(--fg-dim); line-height: 1.55; }
+  .dlmodal-steps b { color: var(--fg); font-weight: 600; }
+  .dlmodal-steps .n { flex: none; width: 22px; height: 22px; margin-top: 1px; display: grid; place-items: center;
+    border: 1px solid var(--line); border-radius: 50%; color: var(--chrome); font-family: var(--mono); font-size: 11px; }
+  .dlmodal-note { font-size: 12px; color: var(--muted); background: var(--bg-deep); border: 1px solid var(--line-soft);
+    border-radius: 10px; padding: 11px 13px; line-height: 1.6; margin-bottom: 16px; }
+  .dlmodal-note code { display: block; margin-top: 5px; font-family: var(--mono); font-size: 11.5px; color: var(--chrome-d); word-break: break-all; }
+  .dlmodal-foot { font-size: 12px; color: var(--muted); margin-bottom: 19px; }
+  .dlmodal-acts { display: flex; gap: 14px; align-items: center; flex-wrap: wrap; }
+  .dlmodal-acts .btn { padding: 11px 20px; }
+  .dlmodal-retry { font-size: 12px; color: var(--muted); text-decoration: underline; text-underline-offset: 2px; }
+  .dlmodal-retry:hover { color: var(--fg-dim); }
+  @keyframes dlfade { from { opacity: 0 } to { opacity: 1 } }
+  @keyframes dlrise { from { opacity: 0; transform: translateY(14px) scale(.985) } to { opacity: 1; transform: none } }
+  @media (prefers-reduced-motion: reduce) { .dlmodal.open, .dlmodal-card { animation: none; } }
+
   /* signature: the EKG pulse line */
   .pulseline { display: block; margin: 48px auto 0; width: min(560px, 84vw); height: 36px; opacity: .92; }
   .pulseline path { stroke: var(--chrome); stroke-width: 1.7; fill: none; filter: drop-shadow(0 0 6px var(--glow)); }
@@ -446,7 +474,7 @@
       <b>all on-device</b>. conso makes no network calls of its own.
     </p>
     <div class="cta-row rise d5">
-      <a class="btn btn-primary" href="https://github.com/bcssewl/conso/releases/latest/download/conso.dmg"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5v8.5M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg> Download for macOS</a>
+      <a class="btn btn-primary dl-btn" href="https://github.com/bcssewl/conso/releases/latest/download/conso.dmg"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5v8.5M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg> Download for macOS</a>
       <a class="btn btn-ghost" href="https://github.com/bcssewl/conso#build--run"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5.5 4.5 2 8l3.5 3.5M10.5 4.5 14 8l-3.5 3.5"/></svg> Build from source</a>
     </div>
 
@@ -785,7 +813,7 @@
     </div>
     <h2>Free. Open source. Yours.</h2>
     <div class="cta-row">
-      <a class="btn btn-primary" href="https://github.com/bcssewl/conso/releases/latest/download/conso.dmg"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5v8.5M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg> Download for macOS</a>
+      <a class="btn btn-primary dl-btn" href="https://github.com/bcssewl/conso/releases/latest/download/conso.dmg"><svg width="14" height="14" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 1.5v8.5M4.5 6.5 8 10l3.5-3.5M2.5 13.5h11"/></svg> Download for macOS</a>
     </div>
     <div class="foot-links">
       <a href="https://github.com/bcssewl/conso">Source</a>
@@ -798,6 +826,58 @@
     </p>
   </div>
 </footer>
+
+<!-- First-launch help: shown when a Download button is clicked (the download still starts). -->
+<div class="dlmodal" id="dlmodal" aria-hidden="true" role="dialog" aria-modal="true" aria-labelledby="dlmodal-title">
+  <div class="dlmodal-card">
+    <button class="dlmodal-x" id="dlmodal-x" aria-label="Close">
+      <svg width="13" height="13" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"><path d="M4 4l8 8M12 4l-8 8"/></svg>
+    </button>
+    <div class="kicker">YOUR DOWNLOAD IS STARTING</div>
+    <h3 id="dlmodal-title">Opening conso the first time</h3>
+    <p class="dlmodal-lead">conso is a free, self-signed build — not notarised by Apple — so macOS blocks it on first launch. That's expected. One quick step and you're set:</p>
+    <ol class="dlmodal-steps">
+      <li><span class="n">1</span><div>Open <b>conso.dmg</b> and drag <b>conso</b> onto the <b>Applications</b> folder.</div></li>
+      <li><span class="n">2</span><div>Launch conso. macOS says it <b>“can’t be opened”</b> — click <b>Done</b> (do <i>not</i> move it to Trash).</div></li>
+      <li><span class="n">3</span><div>Open <b>System Settings → Privacy &amp; Security</b>, scroll to the bottom, and click <b>Open Anyway</b> next to conso. Confirm with Touch ID or your password.</div></li>
+    </ol>
+    <div class="dlmodal-note">If macOS instead says conso is “damaged”, clear the download flag in Terminal:<code>xattr -dr com.apple.quarantine /Applications/conso.app</code></div>
+    <p class="dlmodal-foot">You only do this once — conso updates itself automatically from then on.</p>
+    <div class="dlmodal-acts">
+      <button class="btn btn-primary" id="dlmodal-ok">Got it</button>
+      <a class="dlmodal-retry" id="dlmodal-retry" href="https://github.com/bcssewl/conso/releases/latest/download/conso.dmg">Download didn’t start? Click here</a>
+    </div>
+  </div>
+</div>
+
+<script>
+  // First-launch download modal: open on a Download click (download still proceeds), close on ✕ / Got it / backdrop / Esc.
+  (function () {
+    const modal = document.getElementById('dlmodal');
+    if (!modal) return;
+    let lastFocus = null;
+    const open = () => {
+      lastFocus = document.activeElement;
+      modal.classList.add('open');
+      modal.setAttribute('aria-hidden', 'false');
+      document.body.style.overflow = 'hidden';
+      const ok = document.getElementById('dlmodal-ok'); if (ok) ok.focus();
+    };
+    const close = () => {
+      modal.classList.remove('open');
+      modal.setAttribute('aria-hidden', 'true');
+      document.body.style.overflow = '';
+      if (lastFocus && lastFocus.focus) lastFocus.focus();
+    };
+    // GitHub serves the .dmg as an attachment, so the default <a> click downloads
+    // without navigating away — we just also surface the first-launch steps.
+    document.querySelectorAll('a.dl-btn').forEach(a => a.addEventListener('click', open));
+    document.getElementById('dlmodal-x').addEventListener('click', close);
+    document.getElementById('dlmodal-ok').addEventListener('click', close);
+    modal.addEventListener('click', e => { if (e.target === modal) close(); });
+    document.addEventListener('keydown', e => { if (e.key === 'Escape' && modal.classList.contains('open')) close(); });
+  })();
+</script>
 
 <script>
   const nav = document.getElementById('nav');
