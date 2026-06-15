@@ -1,6 +1,6 @@
 <div align="center">
 
-<img src="docs/assets/mark-native.png" alt="conso" width="120" height="120" />
+<img src="docs/assets/app-icon.png" alt="conso" width="120" height="120" />
 
 # conso
 
