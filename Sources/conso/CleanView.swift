@@ -187,8 +187,11 @@ struct CleanView: View {
                     // installed the row is locked (can't be selected) and points the user at
                     // Settings; once installed it behaves like any other selectable row.
                     let helperLocked = model.needsHelper(item.id) && !model.helperInstalled
+                    let helperNote = AppDistribution.supportsPrivilegedHelper
+                        ? "needs the privileged helper — install it in Settings"
+                        : "needs the developer build — unavailable in this download"
                     cleanRow(t, item: item, accentOpacity: 0.5, swatchColor: t.warn,
-                             note: helperLocked ? "needs the privileged helper — install it in Settings" : nil,
+                             note: helperLocked ? helperNote : nil,
                              locked: helperLocked, target: explainTarget(for: item.id)) {
                         model.toggleHidden(item.id)
                     }

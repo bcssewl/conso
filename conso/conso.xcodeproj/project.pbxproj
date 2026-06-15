@@ -10,6 +10,8 @@
 		1603DF6A2FDEB4AC007F0E58 /* conso-helper in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1603DF512FDEB12B007F0E58 /* conso-helper */; settings = {ATTRIBUTES = (CodeSignOnCopy, ); }; };
 		1603DF6B2FDEB4D2007F0E58 /* com.conso.conso.helper.plist in CopyFiles */ = {isa = PBXBuildFile; fileRef = 1603DF602FDEB3ED007F0E58 /* com.conso.conso.helper.plist */; };
 		16712B7F2FDE9DE700C06B5A /* ConsoCore in Frameworks */ = {isa = PBXBuildFile; productRef = 16712B7E2FDE9DE700C06B5A /* ConsoCore */; };
+		FACE0000000000000000E003 /* Sparkle in Frameworks */ = {isa = PBXBuildFile; productRef = FACE0000000000000000E002 /* Sparkle */; };
+		FACE0000000000000000DD80 /* UpdaterController.swift in Sources */ = {isa = PBXBuildFile; fileRef = FACE0000000000000000CC80 /* UpdaterController.swift */; };
 		16712B8F2FDE9E7D00C06B5A /* StatusView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16712B8B2FDE9E7D00C06B5A /* StatusView.swift */; };
 		16712B902FDE9E7D00C06B5A /* Router.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16712B892FDE9E7D00C06B5A /* Router.swift */; };
 		16712B912FDE9E7D00C06B5A /* Glass.swift in Sources */ = {isa = PBXBuildFile; fileRef = 16712B852FDE9E7D00C06B5A /* Glass.swift */; };
@@ -134,6 +136,7 @@
 		FACE0000000000000000CC60 /* CleanSummaryViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = CleanSummaryViewModel.swift; path = ../Sources/conso/CleanSummaryViewModel.swift; sourceTree = SOURCE_ROOT; };
 		FACE0000000000000000CC61 /* FoundationModelsCleanSummarizer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FoundationModelsCleanSummarizer.swift; path = ../Sources/conso/FoundationModelsCleanSummarizer.swift; sourceTree = SOURCE_ROOT; };
 		FACE0000000000000000CC70 /* GroundedModelRunner.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GroundedModelRunner.swift; path = ../Sources/conso/GroundedModelRunner.swift; sourceTree = SOURCE_ROOT; };
+		FACE0000000000000000CC80 /* UpdaterController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UpdaterController.swift; path = ../Sources/conso/UpdaterController.swift; sourceTree = SOURCE_ROOT; };
 /* End PBXFileReference section */
 
 /* Begin PBXFileSystemSynchronizedRootGroup section */
@@ -157,6 +160,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				16712B7F2FDE9DE700C06B5A /* ConsoCore in Frameworks */,
+				FACE0000000000000000E003 /* Sparkle in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -209,6 +213,7 @@
 				FACE0000000000000000CC60 /* CleanSummaryViewModel.swift */,
 				FACE0000000000000000CC61 /* FoundationModelsCleanSummarizer.swift */,
 				FACE0000000000000000CC70 /* GroundedModelRunner.swift */,
+				FACE0000000000000000CC80 /* UpdaterController.swift */,
 				FACE0000000000000000AA01 /* Assets.xcassets */,
 				FACE0000000000000000AA02 /* mark-native.png */,
 				FACE0000000000000000AA03 /* mark-pro.png */,
@@ -271,6 +276,7 @@
 			name = conso;
 			packageProductDependencies = (
 				16712B7E2FDE9DE700C06B5A /* ConsoCore */,
+				FACE0000000000000000E002 /* Sparkle */,
 			);
 			productName = conso;
 			productReference = 16712B6F2FDE9B9700C06B5A /* conso.app */;
@@ -306,6 +312,7 @@
 			minimizedProjectReferenceProxies = 1;
 			packageReferences = (
 				16712B7D2FDE9DE700C06B5A /* XCLocalSwiftPackageReference "../../CONSO" */,
+				FACE0000000000000000E001 /* XCRemoteSwiftPackageReference "Sparkle" */,
 			);
 			preferredProjectObjectVersion = 77;
 			productRefGroup = 16712B702FDE9B9700C06B5A /* Products */;
@@ -378,6 +385,7 @@
 				FACE0000000000000000DD60 /* CleanSummaryViewModel.swift in Sources */,
 				FACE0000000000000000DD61 /* FoundationModelsCleanSummarizer.swift in Sources */,
 				FACE0000000000000000DD70 /* GroundedModelRunner.swift in Sources */,
+				FACE0000000000000000DD80 /* UpdaterController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -552,8 +560,9 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Bassel. MIT License.";
+				CONSO_DIST_CHANNEL = developer;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = conso/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -586,8 +595,9 @@
 				ENABLE_HARDENED_RUNTIME = YES;
 				ENABLE_PREVIEWS = YES;
 				ENABLE_USER_SELECTED_FILES = readonly;
-				GENERATE_INFOPLIST_FILE = YES;
-				INFOPLIST_KEY_NSHumanReadableCopyright = "Copyright © 2026 Bassel. MIT License.";
+				CONSO_DIST_CHANNEL = developer;
+				GENERATE_INFOPLIST_FILE = NO;
+				INFOPLIST_FILE = conso/Info.plist;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/../Frameworks",
@@ -644,10 +654,26 @@
 		};
 /* End XCLocalSwiftPackageReference section */
 
+/* Begin XCRemoteSwiftPackageReference section */
+		FACE0000000000000000E001 /* XCRemoteSwiftPackageReference "Sparkle" */ = {
+			isa = XCRemoteSwiftPackageReference;
+			repositoryURL = "https://github.com/sparkle-project/Sparkle";
+			requirement = {
+				kind = upToNextMajorVersion;
+				minimumVersion = 2.7.0;
+			};
+		};
+/* End XCRemoteSwiftPackageReference section */
+
 /* Begin XCSwiftPackageProductDependency section */
 		16712B7E2FDE9DE700C06B5A /* ConsoCore */ = {
 			isa = XCSwiftPackageProductDependency;
 			productName = ConsoCore;
+		};
+		FACE0000000000000000E002 /* Sparkle */ = {
+			isa = XCSwiftPackageProductDependency;
+			package = FACE0000000000000000E001 /* XCRemoteSwiftPackageReference "Sparkle" */;
+			productName = Sparkle;
 		};
 /* End XCSwiftPackageProductDependency section */
 	};

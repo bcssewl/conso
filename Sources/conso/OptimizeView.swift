@@ -170,11 +170,16 @@ struct OptimizeView: View {
                     .fixedSize(horizontal: false, vertical: true)
                 if task.needsHelper {
                     let installed = HelperClient.shared.isInstalled
-                    let copy = installed
-                        ? (task.userSteps.isEmpty ? "runs via the privileged helper"
-                                                  : "partly runs via the privileged helper")
-                        : (task.userSteps.isEmpty ? "needs the privileged helper — install it in Settings"
-                                                  : "partly needs the privileged helper — install it in Settings")
+                    // Single expression (nested ternary): if/else statements aren't allowed
+                    // here inside the ViewBuilder. Self-signed builds can't run the helper.
+                    let copy = !AppDistribution.supportsPrivilegedHelper
+                        ? (task.userSteps.isEmpty ? "needs the developer build — unavailable in this download"
+                                                  : "partly needs the developer build — unavailable in this download")
+                        : (installed
+                            ? (task.userSteps.isEmpty ? "runs via the privileged helper"
+                                                      : "partly runs via the privileged helper")
+                            : (task.userSteps.isEmpty ? "needs the privileged helper — install it in Settings"
+                                                      : "partly needs the privileged helper — install it in Settings"))
                     Label(copy, systemImage: installed ? "checkmark.shield" : "lock.shield")
                         .font(.system(size: 10.5, weight: .semibold))
                         .foregroundStyle(installed ? t.text3 : t.warn)

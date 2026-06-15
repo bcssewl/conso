@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
+<plist version="1.0">
+<dict>
+	<key>CFBundleDevelopmentRegion</key>
+	<string>$(DEVELOPMENT_LANGUAGE)</string>
+	<key>CFBundleExecutable</key>
+	<string>$(EXECUTABLE_NAME)</string>
+	<key>CFBundleIdentifier</key>
+	<string>$(PRODUCT_BUNDLE_IDENTIFIER)</string>
+	<key>CFBundleInfoDictionaryVersion</key>
+	<string>6.0</string>
+	<key>CFBundleName</key>
+	<string>$(PRODUCT_NAME)</string>
+	<key>CFBundlePackageType</key>
+	<string>$(PRODUCT_BUNDLE_PACKAGE_TYPE)</string>
+	<key>CFBundleShortVersionString</key>
+	<string>$(MARKETING_VERSION)</string>
+	<key>CFBundleVersion</key>
+	<string>$(CURRENT_PROJECT_VERSION)</string>
+	<key>LSMinimumSystemVersion</key>
+	<string>$(MACOSX_DEPLOYMENT_TARGET)</string>
+	<key>NSHumanReadableCopyright</key>
+	<string>Copyright © 2026 Bassel. MIT License.</string>
+
+	<!-- Sparkle auto-update (https://sparkle-project.org). conso is non-sandboxed,
+	     so the SUEnable*Service keys are intentionally omitted (sandbox-only). -->
+	<key>SUFeedURL</key>
+	<string>https://github.com/bcssewl/conso/releases/latest/download/appcast.xml</string>
+	<key>SUPublicEDKey</key>
+	<string>8wg3rCVDVU4AwQzQSVvHlN84iS/UocE+SH76S9rxsAQ=</string>
+	<key>SUEnableAutomaticChecks</key>
+	<true/>
+	<key>SUScheduledCheckInterval</key>
+	<integer>86400</integer>
+
+	<!-- conso-specific: "developer" (team-signed local build, helper works) vs
+	     "self-signed" (downloadable DMG, root-helper features gracefully disabled).
+	     Substituted from the CONSO_DIST_CHANNEL build setting; release.sh sets it. -->
+	<key>ConsoDistributionChannel</key>
+	<string>$(CONSO_DIST_CHANNEL)</string>
+</dict>
+</plist>

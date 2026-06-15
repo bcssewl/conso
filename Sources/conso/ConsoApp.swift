@@ -9,6 +9,9 @@ struct ConsoApp: App {
     @State private var router = Router()
     @State private var quick = QuickActions()
     @State private var autoClean = AutoCleanScheduler()
+    /// The single Sparkle updater, held for the app's lifetime (or scheduled checks stop).
+    /// Shared by the Window and the MenuBarExtra via the environment.
+    @StateObject private var updater = UpdaterController()
 
     /// First-run gate: false until the user completes onboarding, then sticky.
     @AppStorage("didOnboard") private var didOnboard = false
@@ -27,6 +30,7 @@ struct ConsoApp: App {
                 .environment(router)
                 .environment(quick)
                 .environment(autoClean)
+                .environmentObject(updater)
                 .onAppear {
                     metrics.start()
                     // Start the optional scheduled auto-clean (off by default; only acts when
@@ -43,6 +47,12 @@ struct ConsoApp: App {
         }
         .windowStyle(.hiddenTitleBar)
         .windowResizability(.contentMinSize)
+        .commands {
+            // Standard macOS "Check for Updates…" item, just below "About conso".
+            CommandGroup(after: .appInfo) {
+                CheckForUpdatesCommand(updater: updater)
+            }
+        }
 
         MenuBarExtra("conso", systemImage: "waveform.path.ecg") {
             HUDView()
@@ -50,6 +60,7 @@ struct ConsoApp: App {
                 .environment(metrics)
                 .environment(router)
                 .environment(quick)
+                .environmentObject(updater)
         }
         .menuBarExtraStyle(.window)
     }

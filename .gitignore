@@ -18,3 +18,12 @@ conso/build/
 .DS_Store
 .AppleDouble
 .LSOverride
+
+# Release output (DMGs, staged appcast) — published to GitHub Releases, not committed
+dist/
+
+# Downloaded Sparkle CLI tools (sign_update, generate_appcast)
+scripts/.sparkle-tools/
+
+# Local design/reference docs (not part of the public repo)
+docs/superpowers/

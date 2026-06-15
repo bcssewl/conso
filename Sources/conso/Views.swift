@@ -175,6 +175,7 @@ struct SettingsPopover: View {
     @Environment(ThemeStore.self) private var theme
     @Environment(\.colorScheme) private var scheme
     @Environment(\.openURL) private var openURL
+    @EnvironmentObject private var updater: UpdaterController
     @State private var helperMsg = ""
     @State private var helperBusy = false
     // Launch-at-login mirrors SMAppService.mainApp; seeded from the real status and
@@ -214,6 +215,8 @@ struct SettingsPopover: View {
             generalSection(t)
             Divider()
             autoCleanSection(t)
+            Divider()
+            updatesSection(t)
             Divider()
             helperSection(t)
             Divider()
@@ -338,44 +341,86 @@ struct SettingsPopover: View {
         return "Version \(short)"
     }
 
+    // MARK: - Updates (Sparkle auto-update + Stable/Beta channel)
+
+    @ViewBuilder
+    private func updatesSection(_ t: Tokens) -> some View {
+        VStack(alignment: .leading, spacing: 9) {
+            Text("UPDATES").font(.system(size: 10, weight: .semibold)).tracking(0.5).foregroundStyle(t.text3)
+            Toggle(isOn: $updater.automaticallyChecksForUpdates) {
+                Text("Automatically check for updates")
+                    .font(.system(size: 12.5, weight: .semibold)).foregroundStyle(t.text)
+            }
+            .toggleStyle(.switch)
+            .tint(t.accent)
+
+            Toggle(isOn: Binding(
+                get: { updater.channel == .beta },
+                set: { updater.channel = $0 ? .beta : .stable }
+            )) {
+                Text("Receive beta updates")
+                    .font(.system(size: 12.5, weight: .semibold)).foregroundStyle(t.text)
+            }
+            .toggleStyle(.switch)
+            .tint(t.accent)
+
+            Text("Beta builds ship early and may be rougher than stable.")
+                .font(.system(size: 11)).foregroundStyle(t.text3)
+                .fixedSize(horizontal: false, vertical: true)
+
+            HStack {
+                ConsoButton(t: t, title: "Check Now", kind: .ghost) { updater.checkForUpdates() }
+                    .disabled(!updater.canCheckForUpdates)
+                Spacer()
+            }
+        }
+    }
+
     @ViewBuilder
     private func helperSection(_ t: Tokens) -> some View {
         VStack(alignment: .leading, spacing: 7) {
             Text("PRIVILEGED HELPER").font(.system(size: 10, weight: .semibold)).tracking(0.5).foregroundStyle(t.text3)
-            HStack(spacing: 8) {
-                Circle().fill(HelperClient.shared.isInstalled ? t.good : t.text3).frame(width: 6, height: 6)
-                Text(HelperClient.shared.isInstalled ? "Installed" : "Not installed")
-                    .font(.system(size: 12, weight: .semibold))
-                    .foregroundStyle(HelperClient.shared.isInstalled ? t.good : t.text2)
-                Spacer()
-                if HelperClient.shared.isInstalled {
-                    ConsoButton(t: t, title: "Remove", kind: .ghost) {
-                        try? HelperClient.shared.uninstall(); helperMsg = ""
-                    }
-                } else {
-                    ConsoButton(t: t, title: "Install", kind: .primary) {
-                        do {
-                            try HelperClient.shared.install()
-                            helperMsg = "Requested — approve in System Settings ▸ Login Items if prompted."
-                        } catch {
-                            helperMsg = "Install failed: \(error.localizedDescription)"
+            if AppDistribution.supportsPrivilegedHelper {
+                HStack(spacing: 8) {
+                    Circle().fill(HelperClient.shared.isInstalled ? t.good : t.text3).frame(width: 6, height: 6)
+                    Text(HelperClient.shared.isInstalled ? "Installed" : "Not installed")
+                        .font(.system(size: 12, weight: .semibold))
+                        .foregroundStyle(HelperClient.shared.isInstalled ? t.good : t.text2)
+                    Spacer()
+                    if HelperClient.shared.isInstalled {
+                        ConsoButton(t: t, title: "Remove", kind: .ghost) {
+                            try? HelperClient.shared.uninstall(); helperMsg = ""
+                        }
+                    } else {
+                        ConsoButton(t: t, title: "Install", kind: .primary) {
+                            do {
+                                try HelperClient.shared.install()
+                                helperMsg = "Requested — approve in System Settings ▸ Login Items if prompted."
+                            } catch {
+                                helperMsg = "Install failed: \(error.localizedDescription)"
+                            }
                         }
                     }
                 }
-            }
-            if HelperClient.shared.isInstalled {
-                ConsoButton(t: t, title: helperBusy ? "Running…" : "Test: Rebuild Spotlight (root)", kind: .ghost) {
-                    helperBusy = true
-                    Task {
-                        let r = await HelperClient.shared.runFix("spotlight")
-                        helperMsg = r.ok ? "✓ ran as root — \(r.output.prefix(120))" : "✗ \(r.output)"
-                        helperBusy = false
+                if HelperClient.shared.isInstalled {
+                    ConsoButton(t: t, title: helperBusy ? "Running…" : "Test: Rebuild Spotlight (root)", kind: .ghost) {
+                        helperBusy = true
+                        Task {
+                            let r = await HelperClient.shared.runFix("spotlight")
+                            helperMsg = r.ok ? "✓ ran as root — \(r.output.prefix(120))" : "✗ \(r.output)"
+                            helperBusy = false
+                        }
                     }
+                    .disabled(helperBusy)
                 }
-                .disabled(helperBusy)
-            }
-            if !helperMsg.isEmpty {
-                Text(helperMsg).font(.system(size: 10.5)).foregroundStyle(t.text3)
+                if !helperMsg.isEmpty {
+                    Text(helperMsg).font(.system(size: 10.5)).foregroundStyle(t.text3)
+                        .fixedSize(horizontal: false, vertical: true)
+                }
+            } else {
+                // Self-signed download: the team-validated helper can't run here.
+                Text("Root maintenance — rebuild Spotlight, flush DNS, clear system font caches, delete APFS snapshots — needs the signed developer build, so it's unavailable in this download. Everything else works normally.")
+                    .font(.system(size: 11)).foregroundStyle(t.text3)
                     .fixedSize(horizontal: false, vertical: true)
             }
         }

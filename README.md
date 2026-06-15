@@ -86,10 +86,22 @@ In short: **`swift build` builds the library; it does not build the app.** Use X
 
 ## Install
 
-conso is currently distributed **as source** — there's no one-click download yet.
+### Download (recommended)
 
-- **Build it yourself** (the supported path today) — see [Build & run](#build--run) below. You'll need Xcode and your own free Apple Team ID.
-- **Why no `.dmg` / `brew install` yet?** A double-click download has to be **signed with a Developer ID and notarized by Apple**, which needs a paid Apple Developer account. conso is also non-sandboxed and installs a small privileged helper, so an un-notarized build won't run cleanly — or at all — on a Mac other than the one that built it. A notarized one-command install (Homebrew cask / signed `.dmg`) is planned once the project has a Developer ID.
+1. Grab the latest **`conso.dmg`** from the [**releases page**](https://github.com/bcssewl/conso/releases/latest) (or the **Download for macOS** button on [conso.app](https://conso.app)).
+2. Open the DMG and drag **conso** into **Applications**.
+3. **First launch.** conso is self-signed (not notarized by Apple), so macOS Gatekeeper blocks it once. Double-click conso, then open **System Settings → Privacy & Security**, scroll to the bottom, click **Open Anyway**, and authenticate. You only do this once per version. (macOS 15+ removed the old right-click → Open shortcut.) If macOS instead says the app is "damaged", clear the download quarantine:
+   ```sh
+   xattr -dr com.apple.quarantine /Applications/conso.app
+   ```
+
+From then on conso **updates itself** — Sparkle checks daily and prompts you when a new version is ready (toggle auto-updates and opt into the **Beta** channel in **Settings → Updates**). Permissions you grant carry across updates.
+
+> **One limitation of the download:** four root-maintenance features — rebuild Spotlight, flush DNS, clear system font caches, delete APFS snapshots — require a team-signed build, so they're disabled in the self-signed DMG. Everything else works fully. To enable them, build from source with your own Apple Team ID (below).
+
+### Build from source
+
+For development, or to enable the root-helper features, build with your own free Apple Team ID — see [Build & run](#build--run).
 
 ## Build & run
 
@@ -123,6 +135,23 @@ Then launch the built `.app` from Xcode's DerivedData (or open the project in Xc
 > - conso is a **menu-bar app**: closing its window does not quit it. When testing a rebuild, quit the running copy first (e.g. `pkill -9 -x conso`) before relaunching.
 > - conso is **non-sandboxed** by design and is **not** a Mac App Store app — it needs filesystem and privileged-helper access the sandbox forbids.
 > - To exercise the privileged helper and snapshot deletion, run a copy of `conso.app` from **/Applications**, then use **Settings → helper Remove + Install** to register the current helper version.
+
+### Releasing (maintainers)
+
+Releases are built locally (conso needs the macOS 26 SDK + Apple Intelligence, which hosted CI can't provide) and published as a self-signed DMG with a Sparkle appcast, the same way the [Trace](https://github.com/bcssewl/trace) app does it.
+
+```sh
+# one-time
+scripts/setup-local-signing.sh          # create the stable "conso Local Signing" identity
+scripts/sparkle-sign.sh --generate-key  # create the EdDSA key; paste SUPublicEDKey into conso/Info.plist
+
+# each release (builds, signs, packages, signs the appcast, publishes to GitHub Releases)
+scripts/release.sh v1.2.0               # stable -> Stable channel (releases/latest)
+scripts/release.sh v1.3.0-beta.1        # pre-release -> Beta channel only (rolling beta-feed)
+scripts/release.sh v1.2.0 --no-publish  # build + sign + DMG + appcast locally, push nothing
+```
+
+**Do not rotate both the signing certificate and the EdDSA key in the same release** — Sparkle needs at least one to stay constant across versions, or existing users can't update.
 
 ---
 
