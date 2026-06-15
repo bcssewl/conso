@@ -125,7 +125,12 @@ APP="$BUILD_DIR/Build/Products/Release/$APP_NAME.app"
 # ---- deep-sign Sparkle inside-out (research-confirmed order) -------------------------
 echo "==> deep-signing with '$SIGN_IDENTITY' (inside-out)"
 SP="$APP/Contents/Frameworks/Sparkle.framework"
-cs() { /usr/bin/codesign --force --options runtime --timestamp=none --sign "$SIGN_IDENTITY" "$@"; }
+# NOTE: no `--options runtime` (Hardened Runtime). This build is never notarized, so we
+# gain nothing from it — and HR enforces Library Validation, which rejects loading
+# Sparkle.framework when the app and framework signatures both lack a Team ID (a
+# self-signed cert has none): "mapping process and mapped file have different Team IDs".
+# Dropping HR disables that check so the embedded framework loads.
+cs() { /usr/bin/codesign --force --timestamp=none --sign "$SIGN_IDENTITY" "$@"; }
 if [[ -d "$SP" ]]; then
     cs "$SP/Versions/B/XPCServices/Installer.xpc"
     cs --preserve-metadata=entitlements "$SP/Versions/B/XPCServices/Downloader.xpc"
